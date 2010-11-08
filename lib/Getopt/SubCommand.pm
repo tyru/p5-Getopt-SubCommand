@@ -78,7 +78,8 @@ sub split_args {
     ) or goto end;
 
     # Command name.
-    $command = shift @a or goto end;
+    @a or goto end;
+    $command = shift @a;
     exists $self->{commands}{$command}{options} or goto end;
 
     # Command options.
