@@ -99,7 +99,7 @@ sub split_args {
     # Command name.
     @$args or goto end;
     $command = shift @$args;
-    exists $self->{commands}{$command}{options} or goto end;
+    defined __get_deep_key($self, ['commands', $command, 'options']) or goto end;
 
     # Command options.
     $command_opts = $self->__get_options(
