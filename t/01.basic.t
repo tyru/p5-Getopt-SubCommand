@@ -76,7 +76,7 @@ my @tests = (
         }, "command name is 'foo'";
     },
     sub {
-        is $parser->command, 'foo', "command name is 'foo'";
+        is $parser->get_command, 'foo', "command name is 'foo'";
     },
     sub {
         is_deeply $parser->get_command_opts, {

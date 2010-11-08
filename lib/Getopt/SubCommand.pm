@@ -9,7 +9,7 @@ our $VERSION = eval '0.001';
 use Getopt::Long ();
 use Data::Util qw/:check anon_scalar/;
 use base qw/Class::Accessor::Fast/;
-__PACKAGE__->mk_accessors(qw/args_ref parser_config command command_args/);
+__PACKAGE__->mk_accessors(qw/args_ref parser_config command_args/);
 
 
 
@@ -58,7 +58,7 @@ sub parse_args {
     my ($global_opts, $cmd, $cmd_opts, $cmd_args) = $self->split_args($args);
 
     defined $global_opts and $self->__set_global_opts($global_opts);
-    defined $cmd         and $self->command($cmd);
+    defined $cmd         and $self->__set_command($cmd);
     defined $cmd_opts    and $self->__set_command_opts($cmd_opts);
     defined $cmd_args    and $self->command_args($cmd_args);
 }
@@ -162,6 +162,15 @@ sub show_usage {
     exit if $opts{exit};
 }
 
+
+sub __set_command {
+    my $self = shift;
+    $self->{__command} = $_[0] if @_;
+}
+
+sub get_command {
+    shift->{__command};
+}
 
 sub __set_command_opts {
     my $self = shift;
