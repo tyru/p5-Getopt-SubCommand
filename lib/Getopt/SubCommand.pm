@@ -21,15 +21,7 @@ sub new {
         auto_help => 1,
         %opt,
     );
-
-    for (qw/commands global_opts/) {
-        unless (exists $opt{$_}) {
-            croak "'$_' is required option.";
-        }
-        unless (is_hash_ref $opt{$_}) {
-            croak "'$_' is hash reference but invalid value was given.";
-        }
-    }
+    $class->__validate_required_new_opts(\%opt);
 
     my $self = bless {
         usage_name => $opt{usage_name},
@@ -61,6 +53,16 @@ sub new {
     }
 
     $self;
+}
+
+sub __validate_required_new_opts {
+    my ($self, $opt) = @_;
+    unless (exists $opt->{commands}) {
+        croak "'commands' is required option.";
+    }
+    unless (is_hash_ref $opt->{commands}) {
+        croak "'commands' is hash reference but invalid value was given.";
+    }
 }
 
 
