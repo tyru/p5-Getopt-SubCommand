@@ -47,7 +47,7 @@ sub new {
     $self->parser_config([]);
 
     # Store parsing results.
-    $self->parse_args($self->args_ref) if $opt{do_parse_args};
+    $self->parse_args() if $opt{do_parse_args};
 
     $self;
 }
@@ -55,6 +55,9 @@ sub new {
 
 sub parse_args {
     my ($self, $args) = @_;
+    $args = $self->args_ref unless defined $args;
+
+    # split_args() destroys $args.
     my ($global_opts, $cmd, $cmd_opts, $cmd_args) = $self->split_args($args);
 
     defined $global_opts and $self->__set_global_opts($global_opts);
