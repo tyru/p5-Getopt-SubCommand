@@ -271,6 +271,7 @@ sub invoke {
 }
 
 
+# Accessing to value without creating empty hashrefs.
 sub __get_deep_key {
     my ($hashref, $keys) = @_;
     my $key = shift @$keys;
