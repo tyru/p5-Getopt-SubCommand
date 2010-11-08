@@ -57,9 +57,9 @@ sub parse_args {
     my ($self, $args) = @_;
     my ($global_opts, $cmd, $cmd_opts, $cmd_args) = $self->split_args($args);
 
-    defined $global_opts and $self->global_opts($global_opts);
+    defined $global_opts and $self->__set_global_opts($global_opts);
     defined $cmd         and $self->command($cmd);
-    defined $cmd_opts    and $self->command_opts($cmd_opts);
+    defined $cmd_opts    and $self->__set_command_opts($cmd_opts);
     defined $cmd_args    and $self->command_args($cmd_args);
 }
 
@@ -163,12 +163,22 @@ sub show_usage {
 }
 
 
-sub command_opts {
+sub __set_command_opts {
+    my $self = shift;
+    $self->{__command_opts} = $_[0] if @_;
+}
+
+sub get_command_opts {
     my $self = shift;
     __deref_accessor($self, '__command_opts', @_);
 }
 
-sub global_opts {
+sub __set_global_opts {
+    my $self = shift;
+    $self->{__global_opts} = $_[0] if @_;
+}
+
+sub get_global_opts {
     my $self = shift;
     __deref_accessor($self, '__global_opts', @_);
 }

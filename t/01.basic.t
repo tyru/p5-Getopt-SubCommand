@@ -70,7 +70,7 @@ my @tests = (
         dies_ok { Getopt::SubCommand->new(commands => []) };
     },
     sub {
-        is_deeply $parser->global_opts(), {
+        is_deeply $parser->get_global_opts(), {
             global => 1,
             opt_hello => 'world',
         }, "command name is 'foo'";
@@ -79,7 +79,7 @@ my @tests = (
         is $parser->command, 'foo', "command name is 'foo'";
     },
     sub {
-        is_deeply $parser->command_opts, {
+        is_deeply $parser->get_command_opts, {
             opt_a => 1,
             opt_command => 1,
             opt_b => 'this is b',
