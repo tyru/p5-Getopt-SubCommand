@@ -52,6 +52,7 @@ sub new {
     $self;
 }
 
+
 sub parse_args {
     my ($self, $args) = @_;
     my ($global_opts, $cmd, $cmd_opts, $cmd_args) = $self->split_args($args);
@@ -135,6 +136,7 @@ sub __get_parser_args {
     (\%getopt_args, \%ref_args);
 }
 
+
 sub get_usage {
     my ($self) = @_;
 
@@ -160,6 +162,17 @@ sub show_usage {
     exit if $opts{exit};
 }
 
+
+sub command_opts {
+    my $self = shift;
+    __deref_accessor($self, '__command_opts', @_);
+}
+
+sub global_opts {
+    my $self = shift;
+    __deref_accessor($self, '__global_opts', @_);
+}
+
 sub __deref_accessor {
     my $self = shift;
     my $ac_name = shift;
@@ -172,14 +185,6 @@ sub __deref_accessor {
         $a = $h->{$_};
         ($_ => (is_scalar_ref($a) ? $$a : $a));
     } keys %$h}
-}
-sub command_opts {
-    my $self = shift;
-    __deref_accessor($self, '__command_opts', @_);
-}
-sub global_opts {
-    my $self = shift;
-    __deref_accessor($self, '__global_opts', @_);
 }
 
 
