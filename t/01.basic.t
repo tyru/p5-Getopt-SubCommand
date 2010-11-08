@@ -1,5 +1,6 @@
 use Test::More;
 use Test::Exception;
+use Test::Output;
 use Getopt::SubCommand;
 
 my $parser;
@@ -31,6 +32,7 @@ my @tests = (
                 },
                 commands => {
                     foo => {
+                        sub => sub { print "foo" },
                         options => {
                             opt_a => {
                                 name => 'a',
@@ -98,6 +100,9 @@ my @tests = (
     },
     sub {
         is_deeply [$parser->get_command_args], [qw/bar baz/], "command's args is 'bar', 'baz'.";
+    },
+    sub {
+        stdout_is sub { $parser->invoke() }, 'foo', 'invoking "foo" command.';
     },
 );
 $_->() for @tests;

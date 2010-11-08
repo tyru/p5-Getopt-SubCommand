@@ -224,6 +224,44 @@ sub __deref_accessor {
     } keys %$h}
 }
 
+sub invoke {
+    my ($self, $opt) = @_;
+    $opt ||= {};
+
+    my $sub = __get_deep_key($self, ['commands', $self->get_command, 'sub']);
+    unless (defined $sub) {
+        if (exists $opt->{fallback} && is_code_ref $opt->{fallback}) {
+            $sub = $opt->{fallback};
+        }
+        else {
+            return;
+        }
+    }
+
+    my @optional_args;
+    if (is_array_ref $opt->{optional_args}) {
+        @optional_args = @{$opt->{optional_args}};
+    }
+
+    $sub->(
+        $self->get_global_opts(),
+        $self->get_command_opts(),
+        scalar $self->get_command_args(),    # will return array-ref
+        @optional_args,
+    );
+}
+
+
+sub __get_deep_key {
+    my ($hashref, $keys) = @_;
+    my $key = shift @$keys;
+
+    return undef unless exists $hashref->{$key};
+    return $hashref->{$key} unless @$keys;
+
+    @_ = ($hashref->{$key}, $keys);
+    goto &__get_deep_key;
+}
 
 
 1;
