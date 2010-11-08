@@ -69,6 +69,7 @@ sub parse_args {
 sub split_args {
     my ($self, $args) = @_;
     my ($global_opts, $command, $command_opts, $command_args);
+    $args = $self->args_ref unless defined $args;
     goto end unless is_array_ref($args) && @$args;
 
     # Global options.
