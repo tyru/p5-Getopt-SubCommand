@@ -128,7 +128,6 @@ sub __get_options {
         @$c, qw(gnu_compat no_bundling no_ignore_case)
     ]);
     my ($parser_args, $ref_args) = $self->__get_parser_args($opt);
-    # TODO: $p->getoptions()'s return value.
     $p->getoptions(%$parser_args) or return undef;
 
     @$args = @ARGV;    # Destroy $args.
