@@ -67,29 +67,32 @@ sub split_args {
     my ($self, $args) = @_;
     my ($global_opts, $command, $command_opts, $command_args);
     goto end unless is_array_ref($args) && @$args;
-    my @a = @$args;    # Do not destroy $args.
 
     # Global options.
     my @g;
-    push @g, shift @a while $a[0] =~ /^-/;
+    push @g, shift @$args while $args->[0] =~ /^-/;
     $global_opts = $self->__get_options(
-        \@g,
+        \@g,    # __get_options() destroys @g.
         $self->{global_opts},
     ) or goto end;
+    unless (@g == 0) {
+        carp "warning: something wrong.";
+    }
 
     # Command name.
-    @a or goto end;
-    $command = shift @a;
+    @$args or goto end;
+    $command = shift @$args;
     exists $self->{commands}{$command}{options} or goto end;
 
     # Command options.
     $command_opts = $self->__get_options(
-        \@a,
+        $args,    # __get_options() destroys $args.
         $self->{commands}{$command}{options},
     ) or goto end;
 
     # Command args.
-    $command_args = \@a;
+    $command_args = [@$args];
+    @$args = ();
 
 end:
     ($global_opts, $command, $command_opts, $command_args);
@@ -113,6 +116,7 @@ sub __get_options {
     # TODO: $p->getoptions()'s return value.
     $p->getoptions(%$parser_args) or return undef;
 
+    @$args = @ARGV;    # Destroy $args.
     $ref_args;
 }
 
