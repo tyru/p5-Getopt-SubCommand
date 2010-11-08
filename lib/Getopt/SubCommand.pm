@@ -16,7 +16,11 @@ __PACKAGE__->mk_accessors(qw/args_ref parser_config/);
 sub new {
     my ($class, %opt) = @_;
     # Override default values with user values.
-    %opt = (do_parse_args => 1, %opt);
+    %opt = (
+        do_parse_args => 1,
+        auto_help => 1,
+        %opt,
+    );
 
     for (qw/commands global_opts/) {
         unless (exists $opt{$_}) {
@@ -48,6 +52,13 @@ sub new {
 
     # Store parsing results.
     $self->parse_args() if $opt{do_parse_args};
+
+    if ($opt{auto_help}) {
+        $self->{commands}{help} = {
+            sub => sub { shift->show_usage },
+            usage => 'Show help text.',
+        };
+    }
 
     $self;
 }
