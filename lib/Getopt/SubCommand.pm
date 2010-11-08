@@ -9,7 +9,7 @@ our $VERSION = eval '0.001';
 use Getopt::Long ();
 use Data::Util qw/:check anon_scalar/;
 use base qw/Class::Accessor::Fast/;
-__PACKAGE__->mk_accessors(qw/args_ref parser_config command_args/);
+__PACKAGE__->mk_accessors(qw/args_ref parser_config/);
 
 
 
@@ -60,7 +60,7 @@ sub parse_args {
     defined $global_opts and $self->__set_global_opts($global_opts);
     defined $cmd         and $self->__set_command($cmd);
     defined $cmd_opts    and $self->__set_command_opts($cmd_opts);
-    defined $cmd_args    and $self->command_args($cmd_args);
+    defined $cmd_args    and $self->__set_command_args($cmd_args);
 }
 
 sub split_args {
@@ -170,6 +170,16 @@ sub __set_command {
 
 sub get_command {
     shift->{__command};
+}
+
+sub __set_command_args {
+    my $self = shift;
+    $self->{__command_args} = $_[0] if @_;
+}
+
+sub get_command_args {
+    my $array_ref = shift->{__command_args};
+    wantarray ? @$array_ref : $array_ref;
 }
 
 sub __set_command_opts {
