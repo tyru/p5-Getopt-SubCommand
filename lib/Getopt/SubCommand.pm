@@ -133,7 +133,13 @@ sub __get_options {
     $p->getoptions(%$parser_args) or return undef;
 
     @$args = @ARGV;    # Destroy $args.
-    $ref_args;
+
+    # Eliminates options which were not given.
+    +{
+        map { $_ => $ref_args->{$_} }
+        grep { defined ${$ref_args->{$_}} }
+        keys %$ref_args
+    };
 }
 
 sub __get_parser_args {
