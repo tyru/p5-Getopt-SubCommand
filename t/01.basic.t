@@ -3,16 +3,23 @@ use Test::Exception;
 use Getopt::SubCommand;
 
 my $parser;
+my @test_args = (
+    qw(
+        --global --hello=world
+        foo
+        -a --command
+    ),
+    q(-b=this is b),
+    q(-c), q(this is c),
+    qw(bar baz),
+);
+
 my @tests = (
     sub {
         lives_ok {
             $parser = Getopt::SubCommand->new(
-                args_ref => [qw(
-                    --global --hello=world
-                    foo
-                    -a --command),
-                    q(-b=this is b), q(-c), q(this is c),
-                ],
+                do_parse_args => 0,    # do not parse_args() at new().
+                args_ref => [@test_args],
                 global_opts => {
                     global => {
                         name => [qw/g global/],
@@ -46,16 +53,14 @@ my @tests = (
         };
     },
     sub {
-        is_deeply $parser->args_ref, [
-            '--global',
-            '--hello=world',
-            'foo',
-            '-a',
-            '--command',
-            '-b=this is b',
-            '-c',
-            'this is c',
-        ], '$parser->parse_args() does NOT destroy $parser->args_ref.';
+        is_deeply $parser->args_ref, [@test_args]
+            ,'$parser->new(do_parse_args => 0, ...)'
+                . 'does NOT destroy $parser->args_ref() yet.';
+    },
+    sub {
+        $parser->parse_args();
+        is_deeply $parser->args_ref, []
+            ,'now $parser->args_ref() is empty array-ref.';
     },
     sub {
         dies_ok { Getopt::SubCommand->new() };
@@ -85,6 +90,14 @@ my @tests = (
             opt_b => 'this is b',
             opt_c => 'this is c',
         }, "command name is 'foo'";
+    },
+    sub {
+        # $parser->get_command_args() returns array-ref in scalar context.
+        # return array in list context.
+        is_deeply scalar($parser->get_command_args), [qw/bar baz/], "command's args is 'bar', 'baz'.";
+    },
+    sub {
+        is_deeply [$parser->get_command_args], [qw/bar baz/], "command's args is 'bar', 'baz'.";
     },
 );
 $_->() for @tests;
