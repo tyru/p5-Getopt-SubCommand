@@ -93,7 +93,7 @@ sub split_args {
         $self->{global_opts},
     ) or goto end;
     unless (@g == 0) {
-        carp "warning: something wrong.";
+        carp "warning: something technically wrong.";    # FIXME :p
     }
 
     # Command name.
