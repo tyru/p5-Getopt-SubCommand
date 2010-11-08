@@ -273,38 +273,201 @@ __END__
 Getopt::SubCommand - Simple sub-command parser
 
 
-=head1 VERSION
-
-This document describes Getopt::SubCommand version 0.0.1
-
-
 =head1 SYNOPSIS
 
     use Getopt::SubCommand;
-  
-  
+    my $parser = Getopt::SubCommand->new(
+        # args_ref => \@ARGV,    # default to \@ARGV
+        args_ref => [qw(
+            --global --hello=world
+            foo
+            -a --command),
+            q(-b=this is b), q(-c), q(this is c),
+        ],
+        global_opts => {
+            global => {
+                name => [qw/g global/],
+            },
+            opt_hello => {
+                name => 'hello',
+                attribute => '=s',
+            },
+        },
+        commands => {
+            foo => {
+                # sub => sub { print "foo" },    # optional
+                options => {
+                    opt_a => {
+                        name => 'a',
+                    },
+                    opt_command => {
+                        name => 'command',
+                    },
+                    opt_b => {
+                        name => 'b',
+                        attribute => '=s',
+                    },
+                    opt_c => {
+                        name => 'c',
+                        attribute => '=s',
+                    },
+                },
+            },
+            # bar => {
+            #     ...
+            # },
+        },
+    );
+
+    my $command = $parser->get_command;
+    if ($command eq 'foo') {
+        print "foo:", $parser->get_command_args();
+    }
+
+    # Or if "sub" exists in command's structure, simply invoke it.
+    $parser->invoke;
+
+
+    warn Dumper $self->get_global_opts();     # {global => 1, opt_hello => 'world'}
+    warn Dumper $self->get_command();         # "foo"
+    warn Dumper $self->get_command_opts();    # {opt_a => 1, opt_command => 1, opt_b => 'this is b', opt_c => 'this is c'}
+    warn Dumper $self->get_command_args();    # ("bar", "baz")
+    warn Dumper scalar $self->get_command_args();    # ["bar", "baz"]
+
+
+
 =head1 DESCRIPTION
+
+The module parses arguments which has sub-command like git.
+It splits into 4 elements.
+    - Global options
+    - Command name
+    - Command options
+    - Command arguments
+
+=head2 GLOBAL OPTIONS
+
+Options before command.
+Note that value string cannot be passed without "=".
+    cmd -g global cmdname -a foo
+In this case, it will be splitted like:
+    - Global options: -g
+    - Command name: global
+    - Command options: -a
+    - Command arguments: cmdname foo
+Because Getopt::SubCommand just skips $arg =~ /^-/
+to search command name.
+
+User must pass option value like this:
+    cmd -g=global cmdname -a foo
+
+=head2 COMMAND NAME
+
+No description is necessary :)
+
+=head2 COMMAND OPTIONS
+
+Command name.
+
+=head2 COMMAND ARGUMENTS
+
+Rest arguments after command name, command options.
 
 
 =head1 METHODS
 
 =over
 
-=item new()
+=item new(%opts)
 
-create instance.
+Create instance.
+
+=item get_command()
+
+Get command name.
+
+=item get_command_args()
+
+Get command arguments.
+If list context, return array.
+If scalar context, return array reference.
+
+=item get_command_opts()
+
+Get command options.
+
+=item get_global_opts()
+
+Get global options.
+
+=item invoke()
+
+=item invoke($opts)
+
+Invoke command if "sub" exists in command's structure.
+
+=item get_usage()
+
+Get usage string.
+
+=item show_usage()
+
+Prints usage string and exit().
+
+=item args_ref()
+
+=item args_ref($args_ref)
+
+Setter/Getter for arguments array reference.
+
+=item parser_config()
+
+=item parser_config($config)
+
+Setter/Getter for config array reference for Getopt::Long::Parser->new().
+
+=item parse_args()
+
+=item parse_args($args_ref)
+
+Parses $args_ref.
+If $args_ref was not given,
+$self->args_ref()'s value is used instead.
+
+Array reference will be destroyed
+(it must be empty array reference after call).
+
+=item split_args()
+
+=item split_args($args_ref)
+
+Splits $args_ref into 4 elements of array.
+If $args_ref was not given,
+$self->args_ref()'s value is used instead.
+
+Array reference will be destroyed
+(it must be empty array reference after call).
+
+TODO
 
 =back
 
 
 =head1 DEPENDENCIES
 
-None.
+    Test::More
+    Test::Pod
+    Test::Pod::Coverage
+    Test::Perl::Critic
+    Test::Exception
+    Test::Output
+    Data::Util
+    Class::Accessor::Fast
 
 
 =head1 BUGS
 
-    No known bugs.
+No known bugs.
 
 
 =head1 AUTHOR
