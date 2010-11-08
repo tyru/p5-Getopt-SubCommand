@@ -12,6 +12,8 @@ Module::Build->new(
         'Test::Pod' => 0,
         'Test::Pod::Coverage' => 0,
         'Test::Perl::Critic' => 0,
+        'Test::Exception' => 0,
+        'Test::Output' => 0,
         'Data::Util' => 0,
         'Class::Accessor::Fast' => 0,
     },
