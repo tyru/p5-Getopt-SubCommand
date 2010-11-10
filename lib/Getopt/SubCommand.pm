@@ -291,10 +291,10 @@ sub invoke {
     my $sub = __get_deep_key($self, ['commands', $self->get_command, 'sub']);
     unless (defined $sub) {
         if (exists $opt->{fallback}) {
-            $sub = $self->__get_command($opt->{fallback}) or return;
+            $sub = $self->__get_command($opt->{fallback});
         }
-        else {
-            return;
+        unless (defined $sub) {
+            croak "fatal: No sub couldn't be found.";
         }
     }
 
