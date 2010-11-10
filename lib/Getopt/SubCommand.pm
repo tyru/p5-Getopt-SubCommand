@@ -51,7 +51,6 @@ sub new {
     if ($opt{auto_help}) {
         $self->{commands}{help} = {
             sub => sub { shift->show_usage },
-            usage => 'Show help text.',
         };
     }
 
