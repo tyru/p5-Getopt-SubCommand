@@ -204,8 +204,8 @@ sub __build_parser_args {
 sub get_usage {
     my ($self) = @_;
 
-    my $cmdname = defined $self->{usage_name} ? $self->{usage_name} : '[No name]';
-    my $version = defined $self->{usage_version} ? $self->{usage_version} : '';
+    my $cmdname = exists $self->{usage_name} ? $self->{usage_name} : '[No name]';
+    my $version = exists $self->{usage_version} ? $self->{usage_version} : '';
     my $available_commands = join "\n", map {
         my $name = $_;
         my $usage = __get_deep_key($self, ['commands', $name, 'usage']);
