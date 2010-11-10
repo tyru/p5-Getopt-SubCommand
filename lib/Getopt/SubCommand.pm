@@ -206,7 +206,11 @@ sub get_usage {
 
     my $cmdname = defined $self->{usage_name} ? $self->{usage_name} : '[No name]';
     my $version = defined $self->{usage_version} ? $self->{usage_version} : '';
-    my $available_commands = join "\n", map { "  $_" } keys %{$self->{commands}};
+    my $available_commands = join "\n", map {
+        my $name = $_;
+        my $usage = __get_deep_key($self, ['commands', $name, 'usage']);
+        "  $name" . (defined $usage ? " - $usage" : '');
+    } keys %{$self->{commands}};
 
     return <<EOM;
 $cmdname $version
