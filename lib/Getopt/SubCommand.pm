@@ -103,9 +103,9 @@ sub split_args {
     # Command name.
     @$args or goto end;
     $command = shift @$args;
-    defined __get_deep_key($self, ['commands', $command, 'options']) or goto end;
 
     # Command options.
+    defined __get_deep_key($self, ['commands', $command, 'options']) or goto end;
     $command_opts = $self->__get_options(
         $args,    # __get_options() destroys $args.
         $self->{commands}{$command}{options},
