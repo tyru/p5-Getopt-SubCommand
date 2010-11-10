@@ -95,10 +95,10 @@ sub split_args {
         \@g,    # __get_options() destroys @g.
         $self->{global_opts},
     ) or goto end;
-    unless (@g == 0) {
-        carp "warning: something technically wrong.";    # FIXME :p
-    }
     $self->__validate_required_global_opts($global_opts);
+    # @g becomes non-zero elements of array
+    # when global options were separated by "--".
+    unshift @$args, @g;
 
     # Command name.
     @$args or goto end;
