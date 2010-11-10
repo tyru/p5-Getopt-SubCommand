@@ -76,10 +76,10 @@ sub parse_args {
     # split_args() destroys $args.
     my ($global_opts, $cmd, $cmd_opts, $cmd_args) = $self->split_args($args);
 
-    defined $global_opts and $self->__set_global_opts($global_opts);
-    defined $cmd         and $self->__set_command($cmd);
-    defined $cmd_opts    and $self->__set_command_opts($cmd_opts);
-    defined $cmd_args    and $self->__set_command_args($cmd_args);
+    $self->__set_global_opts($global_opts);
+    $self->__set_command($cmd);
+    $self->__set_command_opts($cmd_opts);
+    $self->__set_command_args($cmd_args);
 }
 
 sub split_args {
@@ -266,6 +266,7 @@ sub __deref_accessor {
         $self->{$ac_name} = $_[0];
     }
     my $h = $self->{$ac_name};
+    return $h unless is_hash_ref $h;
     # Dereference anon-scalar values.
     +{map {
         $a = $h->{$_};
