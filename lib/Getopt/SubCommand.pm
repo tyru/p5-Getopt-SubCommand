@@ -113,7 +113,7 @@ sub split_args {
     $command = shift @$args;
 
     # Command options.
-    defined __get_deep_key($self, ['commands', $command, 'options']) or goto end;
+    defined __get_key($self, ['commands', $command, 'options']) or goto end;
     $command_opts = $self->__get_options(
         $args,    # __get_options() destroys $args.
         $self->{commands}{$command}{options},
@@ -159,13 +159,13 @@ sub __get_options {
 
 sub __validate_required_global_opts {
     my ($self, $got_opts) = @_;
-    my $h = __get_deep_key($self, ['global_opts']) || return;
+    my $h = __get_key($self, ['global_opts']) || return;
     $self->__validate_required_opts($h, $got_opts);
 }
 
 sub __validate_required_command_opts {
     my ($self, $command, $got_opts) = @_;
-    my $h = __get_deep_key($self, ['commands', $command, 'options']) || return;
+    my $h = __get_key($self, ['commands', $command, 'options']) || return;
     $self->__validate_required_opts($h, $got_opts);
 }
 
@@ -173,7 +173,7 @@ sub __validate_required_opts {
     my (undef, $h, $got_opts) = @_;
 
     for my $optname (keys %$h) {
-        my $required = __get_deep_key($h, [$optname, 'required']);
+        my $required = __get_key($h, [$optname, 'required']);
         if ($required && ! exists $got_opts->{$optname}) {
             $optname = length $optname == 1 ? "-$optname" : "--$optname";
             croak "required option '$optname' is missing.";
@@ -211,7 +211,7 @@ sub get_usage {
     my $cmdargs = defined $self->{usage_args} ? $self->{usage_args} : 'COMMAND ARGS';
     my $available_commands = join "\n", map {
         my $name = $_;
-        my $usage = __get_deep_key($self, ['commands', $name, 'usage']);
+        my $usage = __get_key($self, ['commands', $name, 'usage']);
         "  $name" . (defined $usage ? " - $usage" : '');
     } keys %{$self->{commands}};
 
@@ -235,7 +235,7 @@ sub show_usage {
 
 sub get_command_usage {
     my ($self, $command) = @_;
-    __get_deep_key($self, ['commands', $command, 'usage']);
+    __get_key($self, ['commands', $command, 'usage']);
 }
 
 sub show_command_usage {
@@ -307,7 +307,7 @@ sub __get_command {
         return $str_or_coderef;
     }
     if (is_string($str_or_coderef)
-        && defined __get_deep_key($self, ['commands', $str_or_coderef, 'sub']))
+        && defined __get_key($self, ['commands', $str_or_coderef, 'sub']))
     {
         return $self->{commands}{$str_or_coderef}{sub};
     }
@@ -320,7 +320,7 @@ sub invoke_command {
     my %opts = (@_ == 1 ? (command => shift) : @_);
 
     my $command = defined $opts{command} ? $opts{command} : $self->get_command;
-    my $sub = __get_deep_key($self, ['commands', $command, 'sub']);
+    my $sub = __get_key($self, ['commands', $command, 'sub']);
     unless (is_code_ref $sub) {
         if (exists $opts{fallback}) {
             $sub = $self->__get_command($opts{fallback});
@@ -344,8 +344,8 @@ sub invoke_command {
 }
 
 
-# Accessing to value without creating empty hashrefs.
-sub __get_deep_key {
+# Accessing to value without creating empty key.
+sub __get_key {
     my ($hashref, $keys) = @_;
     my $key = shift @$keys;
 
@@ -354,7 +354,7 @@ sub __get_deep_key {
     return $hashref->{$key} unless @$keys;
 
     @_ = ($hashref->{$key}, $keys);
-    goto &__get_deep_key;
+    goto &__get_key;
 }
 
 
