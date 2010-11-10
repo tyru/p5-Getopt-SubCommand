@@ -55,14 +55,14 @@ my @tests = (
         };
     },
     sub {
-        is_deeply $parser->args_ref, [@test_args]
+        is_deeply $parser->get_args_ref, [@test_args]
             ,'$parser->new(do_parse_args => 0, ...)'
-                . 'does NOT destroy $parser->args_ref() yet.';
+                . 'does NOT destroy $parser->get_args_ref() yet.';
     },
     sub {
         $parser->parse_args();
-        is_deeply $parser->args_ref, []
-            ,'now $parser->args_ref() is empty array-ref.';
+        is_deeply $parser->get_args_ref, []
+            ,'now $parser->get_args_ref() is empty array-ref.';
     },
     sub {
         dies_ok { Getopt::SubCommand->new() };

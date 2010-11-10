@@ -10,6 +10,7 @@ use Getopt::Long ();
 use Scalar::Util ();
 use Data::Util qw/:check anon_scalar/;
 use base qw/Class::Accessor::Fast/;
+__PACKAGE__->follow_best_practice;
 __PACKAGE__->mk_accessors(qw/args_ref parser_config/);
 
 
@@ -31,7 +32,7 @@ sub new {
         commands => $opt{commands},
         global_opts => $opt{global_opts},
     }, $class;
-    $self->args_ref(do {
+    $self->set_args_ref(do {
         if (not defined $opt{args_ref}) {
             [];
         }
@@ -45,7 +46,7 @@ fallback: use @ARGV as args_ref instead.
 EOM
         }
     });
-    $self->parser_config([]);
+    $self->set_parser_config([]);
 
     # Store parsing results.
     $self->parse_args() if $opt{do_parse_args};
@@ -76,7 +77,7 @@ sub __validate_required_new_opts {
 
 sub parse_args {
     my ($self, $args) = @_;
-    $args = $self->args_ref unless defined $args;
+    $args = $self->get_args_ref unless defined $args;
 
     # split_args() destroys $args.
     my ($global_opts, $cmd, $cmd_opts, $cmd_args) = $self->split_args($args);
@@ -90,7 +91,7 @@ sub parse_args {
 sub split_args {
     my ($self, $args) = @_;
     my ($global_opts, $command, $command_opts, $command_args);
-    $args = $self->args_ref unless defined $args;
+    $args = $self->get_args_ref unless defined $args;
     goto end unless is_array_ref($args) && @$args;
 
     # Global options.
@@ -137,7 +138,7 @@ sub __get_options {
     # - gnu_compat: --opt="..." is allowed.
     # - no_bundling: single character option is not bundled.
     # - no_ignore_case: no ignore case on long option.
-    my $c = $self->parser_config;
+    my $c = $self->get_parser_config;
     my $p = Getopt::Long::Parser->new(config => [
         @$c, qw(gnu_compat no_bundling no_ignore_case)
     ]);
@@ -490,17 +491,20 @@ Get usage string.
 
 Prints usage string and exit().
 
-=item args_ref()
+=item get_args_ref()
+Getter for arguments array reference.
 
-=item args_ref($args_ref)
+=item set_args_ref($args_ref)
 
-Setter/Getter for arguments array reference.
+Setter for arguments array reference.
 
-=item parser_config()
+=item get_parser_config()
 
-=item parser_config($config)
+Getter for config array reference for Getopt::Long::Parser->new().
 
-Setter/Getter for config array reference for Getopt::Long::Parser->new().
+=item set_parser_config($config)
+
+Setter for config array reference for Getopt::Long::Parser->new().
 
 =item parse_args()
 
