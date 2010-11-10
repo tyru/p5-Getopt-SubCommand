@@ -233,6 +233,18 @@ sub show_usage {
     exit if $opts{exit};
 }
 
+sub get_command_usage {
+    my ($self, $command) = @_;
+    __get_deep_key($self, ['commands', $command, 'usage']);
+}
+
+sub show_command_usage {
+    my ($self, $command, %opts) = @_;
+    %opts = (filehandle => \*STDOUT, exit => 1, %opts);
+    print {$opts{filehandle}} $self->get_command_usage($command);
+    exit if $opts{exit};
+}
+
 
 sub __set_command {
     my $self = shift;
@@ -498,6 +510,14 @@ Get usage string.
 =item show_usage()
 
 Prints usage string and exit().
+
+=item get_command_usage()
+
+Get command usage string.
+
+=item show_command_usage()
+
+Prints command usage string and exit().
 
 =item get_args_ref()
 Getter for arguments array reference.
