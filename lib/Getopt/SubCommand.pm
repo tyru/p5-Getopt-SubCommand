@@ -449,6 +449,7 @@ Create instance.
 =item get_command()
 
 Get command name.
+This becomes undef when no command is found.
 
 =item get_command_args()
 
@@ -456,13 +457,18 @@ Get command arguments.
 If list context, return array.
 If scalar context, return array reference.
 
+This is undef before calling $self->parse_args().
+After call, This must not be undef.
+
 =item get_command_opts()
 
 Get command options.
+This becomes undef when no command options are found.
 
 =item get_global_opts()
 
 Get global options.
+This becomes undef when no global options are found.
 
 =item invoke()
 
