@@ -314,6 +314,7 @@ sub __get_command {
     return undef;
 }
 
+
 sub invoke_command {
     my $self = shift;
     my %opts = (@_ == 1 ? (command => shift) : @_);
