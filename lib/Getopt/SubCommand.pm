@@ -112,11 +112,11 @@ sub split_args {
     ) or goto end;
     $self->__validate_required_command_opts($command, $command_opts);
 
+end:
     # Command args.
     $command_args = [@$args];
     @$args = ();
 
-end:
     ($global_opts, $command, $command_opts, $command_args);
 }
 
