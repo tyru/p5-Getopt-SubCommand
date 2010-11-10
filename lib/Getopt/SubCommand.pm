@@ -321,11 +321,11 @@ sub invoke_command {
 
     my $command = defined $opts{command} ? $opts{command} : $self->get_command;
     my $sub = __get_deep_key($self, ['commands', $command, 'sub']);
-    unless (defined $sub) {
+    unless (is_code_ref $sub) {
         if (exists $opts{fallback}) {
             $sub = $self->__get_command($opts{fallback});
         }
-        unless (defined $sub) {
+        unless (is_code_ref $sub) {
             croak "fatal: No sub couldn't be found.";
         }
     }
