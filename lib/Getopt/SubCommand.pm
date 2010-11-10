@@ -142,7 +142,7 @@ sub __get_options {
     my $p = Getopt::Long::Parser->new(config => [
         @$c, qw(gnu_compat no_bundling no_ignore_case)
     ]);
-    my ($parser_args, $ref_args) = $self->__get_parser_args($opt);
+    my ($parser_args, $ref_args) = $self->__build_parser_args($opt);
     $p->getoptions(%$parser_args) or return undef;
 
     @$args = @ARGV;    # Destroy $args.
@@ -179,7 +179,7 @@ sub __validate_required_opts {
     }
 }
 
-sub __get_parser_args {
+sub __build_parser_args {
     my ($self, $options) = @_;
     my %ref_args;
     my %getopt_args;    # Getopt::Long::GetOptions()'s args.
