@@ -33,17 +33,19 @@ sub new {
         global_opts => $opt{global_opts},
     }, $class;
     $self->set_args_ref(do {
-        if (not defined $opt{args_ref}) {
-            [];
-        }
-        elsif (is_array_ref $opt{args_ref}) {
-            $opt{args_ref};
-        }
-        else {
-            croak <<'EOM';
+        if (exists $opt{args_ref}) {
+            if (is_array_ref $opt{args_ref}) {
+                $opt{args_ref};
+            }
+            else {
+                croak <<'EOM';
 'args_ref' is array reference but invalid value was given.
 fallback: use @ARGV as args_ref instead.
 EOM
+            }
+        }
+        else {
+            \@ARGV;
         }
     });
     $self->set_parser_config([]);
