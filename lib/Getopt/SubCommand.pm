@@ -7,6 +7,7 @@ use Carp qw/carp croak/;
 our $VERSION = eval '0.001';
 
 use Getopt::Long ();
+use Scalar::Util ();
 use Data::Util qw/:check anon_scalar/;
 use base qw/Class::Accessor::Fast/;
 __PACKAGE__->mk_accessors(qw/args_ref parser_config/);
@@ -51,7 +52,11 @@ EOM
 
     if ($opt{auto_help}) {
         $self->{commands}{help} = {
-            sub => sub { shift->show_usage },
+            sub => do {
+                my $weaken_self = $self;
+                Scalar::Util::weaken $weaken_self;
+                sub { $weaken_self->show_usage };
+            },
         };
     }
 
