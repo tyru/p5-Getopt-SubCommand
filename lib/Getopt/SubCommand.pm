@@ -95,6 +95,7 @@ sub split_args {
     unless (@g == 0) {
         carp "warning: something technically wrong.";    # FIXME :p
     }
+    $self->__validate_required_global_opts($global_opts);
 
     # Command name.
     @$args or goto end;
@@ -106,6 +107,7 @@ sub split_args {
         $args,    # __get_options() destroys $args.
         $self->{commands}{$command}{options},
     ) or goto end;
+    $self->__validate_required_command_opts($command, $command_opts);
 
     # Command args.
     $command_args = [@$args];
@@ -140,6 +142,30 @@ sub __get_options {
         grep { defined ${$ref_args->{$_}} }
         keys %$ref_args
     };
+}
+
+sub __validate_required_global_opts {
+    my ($self, $got_opts) = @_;
+    my $h = __get_deep_key($self, ['global_opts']) || return;
+    $self->__validate_required_opts($h, $got_opts);
+}
+
+sub __validate_required_command_opts {
+    my ($self, $command, $got_opts) = @_;
+    my $h = __get_deep_key($self, ['commands', $command, 'options']) || return;
+    $self->__validate_required_opts($h, $got_opts);
+}
+
+sub __validate_required_opts {
+    my (undef, $h, $got_opts) = @_;
+
+    for my $optname (keys %$h) {
+        my $required = __get_deep_key($h, [$optname, 'required']);
+        if ($required && ! exists $got_opts->{$optname}) {
+            $optname = length $optname == 1 ? "-$optname" : "--$optname";
+            croak "required option '$optname' is missing.";
+        }
+    }
 }
 
 sub __get_parser_args {
