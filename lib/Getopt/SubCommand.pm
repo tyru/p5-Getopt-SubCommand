@@ -270,14 +270,28 @@ sub __deref_accessor {
     } keys %$h}
 }
 
+sub __get_command {
+    my ($self, $str_or_coderef) = @_;
+
+    if (is_code_ref $str_or_coderef) {
+        return $str_or_coderef;
+    }
+    if (is_string($str_or_coderef)
+        && defined __get_deep_key($self, ['commands', $str_or_coderef, 'sub']))
+    {
+        return $self->{commands}{$str_or_coderef}{sub};
+    }
+    return undef;
+}
+
 sub invoke {
     my ($self, $opt) = @_;
     $opt ||= {};
 
     my $sub = __get_deep_key($self, ['commands', $self->get_command, 'sub']);
     unless (defined $sub) {
-        if (exists $opt->{fallback} && is_code_ref $opt->{fallback}) {
-            $sub = $opt->{fallback};
+        if (exists $opt->{fallback}) {
+            $sub = $self->__get_command($opt->{fallback}) or return;
         }
         else {
             return;
