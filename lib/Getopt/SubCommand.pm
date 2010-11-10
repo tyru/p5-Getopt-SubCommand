@@ -305,6 +305,7 @@ sub __get_deep_key {
     my ($hashref, $keys) = @_;
     my $key = shift @$keys;
 
+    return undef unless defined $key;
     return undef unless exists $hashref->{$key};
     return $hashref->{$key} unless @$keys;
 
