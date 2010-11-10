@@ -20,7 +20,7 @@ sub new {
     # Override default values with user values.
     %opt = (
         do_parse_args => 1,
-        auto_help => 1,
+        auto_help_command => 1,
         %opt,
     );
     $class->__validate_required_new_opts(\%opt);
@@ -53,7 +53,7 @@ EOM
     # Store parsing results.
     $self->parse_args() if $opt{do_parse_args};
 
-    if ($opt{auto_help}) {
+    if ($opt{auto_help_command}) {
         $self->{commands}{help} = {
             sub => do {
                 my $weaken_self = $self;
