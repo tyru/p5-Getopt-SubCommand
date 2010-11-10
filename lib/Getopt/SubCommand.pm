@@ -315,13 +315,12 @@ sub __get_command {
 }
 
 sub invoke {
-    my ($self, $opts) = @_;
-    $opts ||= {};
+    my ($self, %opts) = @_;
 
     my $sub = __get_deep_key($self, ['commands', $self->get_command, 'sub']);
     unless (defined $sub) {
-        if (exists $opts->{fallback}) {
-            $sub = $self->__get_command($opts->{fallback});
+        if (exists $opts{fallback}) {
+            $sub = $self->__get_command($opts{fallback});
         }
         unless (defined $sub) {
             croak "fatal: No sub couldn't be found.";
@@ -329,8 +328,8 @@ sub invoke {
     }
 
     my @optional_args;
-    if (is_array_ref $opts->{optional_args}) {
-        @optional_args = @{$opts->{optional_args}};
+    if (is_array_ref $opts{optional_args}) {
+        @optional_args = @{$opts{optional_args}};
     }
 
     $sub->(
@@ -499,7 +498,7 @@ This becomes undef when no global options are found.
 
 =item invoke()
 
-=item invoke($opts)
+=item invoke(%opts)
 
 Invoke command if "sub" exists in command's structure.
 
