@@ -65,18 +65,6 @@ my @tests = (
             ,'now $parser->get_args_ref() is empty array-ref.';
     },
     sub {
-        dies_ok { Getopt::SubCommand->new() };
-    },
-    sub {
-        dies_ok { Getopt::SubCommand->new(commands => undef) };
-    },
-    sub {
-        dies_ok { Getopt::SubCommand->new(commands => '') };
-    },
-    sub {
-        dies_ok { Getopt::SubCommand->new(commands => []) };
-    },
-    sub {
         is_deeply $parser->get_global_opts(), {
             global => 1,
             opt_hello => 'world',

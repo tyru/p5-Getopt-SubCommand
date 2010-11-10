@@ -23,7 +23,6 @@ sub new {
         auto_help_command => 1,
         %opts,
     );
-    $class->__validate_required_new_opts(\%opts);
 
     my $self = bless {
         usage_name => $opts{usage_name},
@@ -64,16 +63,6 @@ EOM
     }
 
     $self;
-}
-
-sub __validate_required_new_opts {
-    my ($self, $opts) = @_;
-    unless (exists $opts->{commands}) {
-        croak "'commands' is required option.";
-    }
-    unless (is_hash_ref $opts->{commands}) {
-        croak "'commands' is hash reference but invalid value was given.";
-    }
 }
 
 
