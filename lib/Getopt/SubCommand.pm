@@ -206,6 +206,7 @@ sub get_usage {
 
     my $cmdname = exists $self->{usage_name} ? $self->{usage_name} : '[No name]';
     my $version = exists $self->{usage_version} ? $self->{usage_version} : '';
+    my $cmdargs = exists $self->{usage_args} ? $self->{usage_args} : 'COMMAND ARGS';
     my $available_commands = join "\n", map {
         my $name = $_;
         my $usage = __get_deep_key($self, ['commands', $name, 'usage']);
@@ -214,7 +215,7 @@ sub get_usage {
 
     return <<EOM;
 $cmdname $version
-usage: $cmdname [options] COMMAND ARGS
+usage: $cmdname [options] $cmdargs
 
 Avaiable commands are:
 $available_commands
