@@ -38,9 +38,10 @@ sub new {
             $opt{args_ref};
         }
         else {
-            carp "'args_ref' is array reference but invalid value was given.";
-            carp 'fallback: use @ARGV as args_ref instead.';
-            \@ARGV;
+            croak <<'EOM';
+'args_ref' is array reference but invalid value was given.
+fallback: use @ARGV as args_ref instead.
+EOM
         }
     });
     $self->parser_config([]);
