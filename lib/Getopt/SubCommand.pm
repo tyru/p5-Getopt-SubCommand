@@ -16,26 +16,26 @@ __PACKAGE__->mk_accessors(qw/args_ref parser_config/);
 
 
 sub new {
-    my ($class, %opt) = @_;
+    my ($class, %opts) = @_;
     # Override default values with user values.
-    %opt = (
+    %opts = (
         do_parse_args => 1,
         auto_help_command => 1,
-        %opt,
+        %opts,
     );
-    $class->__validate_required_new_opts(\%opt);
+    $class->__validate_required_new_opts(\%opts);
 
     my $self = bless {
-        usage_name => $opt{usage_name},
-        usage_version => $opt{usage_version},
-        usage_args => $opt{usage_args},
-        commands => $opt{commands},
-        global_opts => $opt{global_opts},
+        usage_name => $opts{usage_name},
+        usage_version => $opts{usage_version},
+        usage_args => $opts{usage_args},
+        commands => $opts{commands},
+        global_opts => $opts{global_opts},
     }, $class;
     $self->set_args_ref(do {
-        if (exists $opt{args_ref}) {
-            if (is_array_ref $opt{args_ref}) {
-                $opt{args_ref};
+        if (exists $opts{args_ref}) {
+            if (is_array_ref $opts{args_ref}) {
+                $opts{args_ref};
             }
             else {
                 croak <<'EOM';
@@ -51,9 +51,9 @@ EOM
     $self->set_parser_config([]);
 
     # Store parsing results.
-    $self->parse_args() if $opt{do_parse_args};
+    $self->parse_args() if $opts{do_parse_args};
 
-    if ($opt{auto_help_command}) {
+    if ($opts{auto_help_command}) {
         $self->{commands}{help} = {
             sub => do {
                 my $weaken_self = $self;
@@ -67,11 +67,11 @@ EOM
 }
 
 sub __validate_required_new_opts {
-    my ($self, $opt) = @_;
-    unless (exists $opt->{commands}) {
+    my ($self, $opts) = @_;
+    unless (exists $opts->{commands}) {
         croak "'commands' is required option.";
     }
-    unless (is_hash_ref $opt->{commands}) {
+    unless (is_hash_ref $opts->{commands}) {
         croak "'commands' is hash reference but invalid value was given.";
     }
 }
@@ -131,7 +131,7 @@ end:
 # Returns undef when it fails to parse.
 # Returns hashref when it succeeds.
 sub __get_options {
-    my ($self, $args, $opt) = @_;
+    my ($self, $args, $opts) = @_;
 
     local @ARGV = @$args;
 
@@ -144,7 +144,7 @@ sub __get_options {
     my $p = Getopt::Long::Parser->new(config => [
         @$c, qw(gnu_compat no_bundling no_ignore_case)
     ]);
-    my ($parser_args, $ref_args) = $self->__build_parser_args($opt);
+    my ($parser_args, $ref_args) = $self->__build_parser_args($opts);
     $p->getoptions(%$parser_args) or return undef;
 
     @$args = @ARGV;    # Destroy $args.
@@ -182,11 +182,11 @@ sub __validate_required_opts {
 }
 
 sub __build_parser_args {
-    my ($self, $options) = @_;
+    my ($self, $opts) = @_;
     my %ref_args;
     my %getopt_args;    # Getopt::Long::GetOptions()'s args.
-    for my $store_name (keys %$options) {
-        my $info = $options->{$store_name};
+    for my $store_name (keys %$opts) {
+        my $info = $opts->{$store_name};
 
         my $arg_key;
         if (is_array_ref $info->{name}) {
@@ -315,13 +315,13 @@ sub __get_command {
 }
 
 sub invoke {
-    my ($self, $opt) = @_;
-    $opt ||= {};
+    my ($self, $opts) = @_;
+    $opts ||= {};
 
     my $sub = __get_deep_key($self, ['commands', $self->get_command, 'sub']);
     unless (defined $sub) {
-        if (exists $opt->{fallback}) {
-            $sub = $self->__get_command($opt->{fallback});
+        if (exists $opts->{fallback}) {
+            $sub = $self->__get_command($opts->{fallback});
         }
         unless (defined $sub) {
             croak "fatal: No sub couldn't be found.";
@@ -329,8 +329,8 @@ sub invoke {
     }
 
     my @optional_args;
-    if (is_array_ref $opt->{optional_args}) {
-        @optional_args = @{$opt->{optional_args}};
+    if (is_array_ref $opts->{optional_args}) {
+        @optional_args = @{$opts->{optional_args}};
     }
 
     $sub->(
