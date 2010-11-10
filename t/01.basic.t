@@ -102,7 +102,7 @@ my @tests = (
         is_deeply [$parser->get_command_args], [qw/bar baz/], "command's args is 'bar', 'baz'.";
     },
     sub {
-        stdout_is sub { $parser->invoke() }, 'foo', 'invoking "foo" command.';
+        stdout_is sub { $parser->invoke_command() }, 'foo', 'invoking "foo" command.';
     },
 );
 $_->() for @tests;

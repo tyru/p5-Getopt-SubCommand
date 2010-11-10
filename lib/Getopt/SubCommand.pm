@@ -314,7 +314,7 @@ sub __get_command {
     return undef;
 }
 
-sub invoke {
+sub invoke_command {
     my ($self, %opts) = @_;
 
     my $sub = __get_deep_key($self, ['commands', $self->get_command, 'sub']);
@@ -415,7 +415,7 @@ Getopt::SubCommand - Simple sub-command parser
     }
 
     # Or if "sub" exists in command's structure, simply invoke it.
-    $parser->invoke;
+    $parser->invoke_command;
 
 
     warn Dumper $self->get_global_opts();     # {global => 1, opt_hello => 'world'}
@@ -496,9 +496,9 @@ This becomes undef when no command options are found.
 Get global options.
 This becomes undef when no global options are found.
 
-=item invoke()
+=item invoke_command()
 
-=item invoke(%opts)
+=item invoke_command(%opts)
 
 Invoke command if "sub" exists in command's structure.
 

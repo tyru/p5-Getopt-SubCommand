@@ -17,7 +17,7 @@ my @tests = (
                         sub => sub { print "bar" },
                     },
                 },
-            )->invoke
+            )->invoke_command
         } "no command sub in foo";
     },
     sub {
@@ -33,7 +33,7 @@ my @tests = (
                         sub => sub { print "bar" },
                     },
                 },
-            )->invoke
+            )->invoke_command
         } "'foo' must be called.";
     },
     sub {
@@ -49,7 +49,7 @@ my @tests = (
                         sub => sub { print "bar" },
                     },
                 },
-            )->invoke
+            )->invoke_command
         } "foo", "check output of 'foo' command.";
     },
 );
