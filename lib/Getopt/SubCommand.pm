@@ -120,6 +120,8 @@ end:
     ($global_opts, $command, $command_opts, $command_args);
 }
 
+# Returns undef when it fails to parse.
+# Returns hashref when it succeeds.
 sub __get_options {
     my ($self, $args, $opt) = @_;
 
