@@ -31,7 +31,10 @@ sub new {
         global_opts => $opt{global_opts},
     }, $class;
     $self->args_ref(do {
-        if (is_array_ref $opt{args_ref}) {
+        if (not defined $opt{args_ref}) {
+            [];
+        }
+        elsif (is_array_ref $opt{args_ref}) {
             $opt{args_ref};
         }
         else {
