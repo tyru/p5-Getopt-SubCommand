@@ -315,9 +315,11 @@ sub __get_command {
 }
 
 sub invoke_command {
-    my ($self, %opts) = @_;
+    my $self = shift;
+    my %opts = (@_ == 1 ? (command => shift) : @_);
 
-    my $sub = __get_deep_key($self, ['commands', $self->get_command, 'sub']);
+    my $command = defined $opts{command} ? $opts{command} : $self->get_command;
+    my $sub = __get_deep_key($self, ['commands', $command, 'sub']);
     unless (defined $sub) {
         if (exists $opts{fallback}) {
             $sub = $self->__get_command($opts{fallback});
