@@ -228,7 +228,8 @@ EOM
 
 sub show_usage {
     my ($self, %opts) = @_;
-    print $self->get_usage;
+    %opts = (filehandle => \*STDOUT, exit => 1, %opts);
+    print {$opts{filehandle}} $self->get_usage;
     exit if $opts{exit};
 }
 
