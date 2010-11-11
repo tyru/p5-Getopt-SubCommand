@@ -82,12 +82,7 @@ my @tests = (
         }, "command name is 'foo'";
     },
     sub {
-        # $parser->get_command_args() returns array-ref in scalar context.
-        # return array in list context.
-        is_deeply scalar($parser->get_command_args), [qw/bar baz/], "command's args is 'bar', 'baz'.";
-    },
-    sub {
-        is_deeply [$parser->get_command_args], [qw/bar baz/], "command's args is 'bar', 'baz'.";
+        is_deeply $parser->get_command_args, [qw/bar baz/], "command's args is 'bar', 'baz'.";
     },
     sub {
         stdout_is sub { $parser->invoke_command() }, 'foo', 'invoking "foo" command.';

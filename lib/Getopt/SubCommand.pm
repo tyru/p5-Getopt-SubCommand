@@ -12,6 +12,7 @@ use Data::Util qw/:check anon_scalar/;
 use base qw/Class::Accessor::Fast/;
 __PACKAGE__->follow_best_practice;
 __PACKAGE__->mk_accessors(qw/args_ref parser_config/);
+__PACKAGE__->mk_ro_accessors(qw/command command_args/);
 
 
 
@@ -74,9 +75,9 @@ sub parse_args {
     my ($global_opts, $cmd, $cmd_opts, $cmd_args) = $self->split_args($args);
 
     $self->__set_global_opts($global_opts);
-    $self->__set_command($cmd);
+    $self->set('command', $cmd);
     $self->__set_command_opts($cmd_opts);
-    $self->__set_command_args($cmd_args);
+    $self->set('command_args', $cmd_args);
 }
 
 sub split_args {
@@ -235,25 +236,6 @@ sub show_command_usage {
 }
 
 
-sub __set_command {
-    my $self = shift;
-    $self->{__command} = $_[0] if @_;
-}
-
-sub get_command {
-    shift->{__command};
-}
-
-sub __set_command_args {
-    my $self = shift;
-    $self->{__command_args} = $_[0] if @_;
-}
-
-sub get_command_args {
-    my $array_ref = shift->{__command_args};
-    wantarray ? @$array_ref : $array_ref;
-}
-
 sub __set_command_opts {
     my $self = shift;
     $self->{__command_opts} = $_[0] if @_;
@@ -327,7 +309,7 @@ sub invoke_command {
     $sub->(
         $self->get_global_opts(),
         $self->get_command_opts(),
-        scalar $self->get_command_args(),    # will return array-ref
+        $self->get_command_args(),
         @optional_args,
     );
 }
@@ -403,7 +385,8 @@ Getopt::SubCommand - Simple sub-command parser
 
     my $command = $parser->get_command;
     if ($command eq 'foo') {
-        print "foo:", $parser->get_command_args();
+        my $args = $parser->get_command_args();
+        print "foo:", @$args;
     }
 
     # Or if "sub" exists in command's structure, simply invoke it.
@@ -413,8 +396,7 @@ Getopt::SubCommand - Simple sub-command parser
     warn Dumper $self->get_global_opts();     # {global => 1, opt_hello => 'world'}
     warn Dumper $self->get_command();         # "foo"
     warn Dumper $self->get_command_opts();    # {opt_a => 1, opt_command => 1, opt_b => 'this is b', opt_c => 'this is c'}
-    warn Dumper $self->get_command_args();    # ("bar", "baz")
-    warn Dumper scalar $self->get_command_args();    # ["bar", "baz"]
+    warn Dumper $self->get_command_args();    # ["bar", "baz"]
 
 
 
@@ -471,9 +453,7 @@ This becomes undef when no command is found.
 
 =item get_command_args()
 
-Get command arguments.
-If list context, return array.
-If scalar context, return array reference.
+Get command arguments (array reference).
 
 This is undef before calling $self->parse_args().
 After call, This must not be undef.
