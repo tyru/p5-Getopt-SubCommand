@@ -294,8 +294,8 @@ sub invoke_command {
 
     my $command = defined $opts{command} ? $opts{command} : $self->get_command;
     my $sub = __get_key($self, ['commands', $command, 'sub']);
+    # Find aliases, fallback command.
     unless (is_code_ref $sub) {
-        # TODO: alias -> fallback -> error
         my $aliases = $self->{aliases};
         if (defined $command && %$aliases) {
             my $alias_table = $self->{__alias_table} ||=
@@ -305,14 +305,12 @@ sub invoke_command {
                 $sub = __get_key($self, ['commands', $cmd, 'sub']);
             }
         }
-        elsif (exists $opts{fallback}) {
+
+        if (!is_code_ref($sub) && exists $opts{fallback}) {
             $sub = $self->__get_command($opts{fallback});
         }
-
-        unless (is_code_ref $sub) {
-            croak "fatal: No sub couldn't be found.";
-        }
     }
+    croak "fatal: No sub couldn't be found." unless is_code_ref $sub;
 
     my @optional_args;
     if (is_array_ref $opts{optional_args}) {
