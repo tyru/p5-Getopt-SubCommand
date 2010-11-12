@@ -307,7 +307,7 @@ sub invoke_command {
             $sub = $self->__get_command($opts{fallback});
         }
     }
-    croak "fatal: No sub couldn't be found." unless is_code_ref $sub;
+    croak "fatal: No sub could be found." unless is_code_ref $sub;
 
     my @optional_args;
     if (is_array_ref $opts{optional_args}) {
