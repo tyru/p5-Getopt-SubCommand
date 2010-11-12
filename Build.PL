@@ -14,6 +14,7 @@ Module::Build->new(
         'Test::Exception' => 0,
         'Test::Output' => 0,
         'Data::Util' => 0,
+        'Regexp::Assemble' => 0,
         'Class::Accessor::Fast' => 0,
     },
     add_to_cleanup      => [ 'Getopt-SubCommand-*' ],

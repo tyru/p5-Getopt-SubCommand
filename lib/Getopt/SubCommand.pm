@@ -9,6 +9,7 @@ our $VERSION = eval '0.001';
 use Getopt::Long ();
 use Scalar::Util ();
 use Data::Util qw/:check anon_scalar/;
+use Regexp::Assemble;
 use base qw/Class::Accessor::Fast/;
 __PACKAGE__->follow_best_practice;
 __PACKAGE__->mk_accessors(qw/args_ref parser_config/);
@@ -31,6 +32,7 @@ sub new {
         usage_args => $opts{usage_args},
         commands => $opts{commands},
         global_opts => $opts{global_opts},
+        aliases => $opts{aliases},
     }, $class;
     $self->set_args_ref(do {
         if (exists $opts{args_ref}) {
@@ -293,9 +295,20 @@ sub invoke_command {
     my $command = defined $opts{command} ? $opts{command} : $self->get_command;
     my $sub = __get_key($self, ['commands', $command, 'sub']);
     unless (is_code_ref $sub) {
-        if (exists $opts{fallback}) {
+        # TODO: alias -> fallback -> error
+        my $aliases = $self->{aliases};
+        if (defined $command && %$aliases) {
+            my $alias_table = $self->{__alias_table} ||=
+                Regexp::Assemble->new->track->add(keys %$aliases);
+            if ($alias_table->match($command)) {
+                my $cmd = $aliases->{$alias_table->matched};
+                $sub = __get_key($self, ['commands', $cmd, 'sub']);
+            }
+        }
+        elsif (exists $opts{fallback}) {
             $sub = $self->__get_command($opts{fallback});
         }
+
         unless (is_code_ref $sub) {
             croak "fatal: No sub couldn't be found.";
         }
