@@ -293,7 +293,7 @@ sub invoke_command {
     my %opts = (@_ == 1 ? (command => shift) : @_);
 
     my $command = defined $opts{command} ? $opts{command} : $self->get_command;
-    my $sub = __get_key($self, ['commands', $command, 'sub']);
+    my $sub = $self->__get_command($command);
     # Find aliases, fallback command.
     unless (is_code_ref $sub) {
         my $aliases = $self->{aliases};
@@ -302,7 +302,7 @@ sub invoke_command {
                 Regexp::Assemble->new->track->add(keys %$aliases);
             if ($alias_table->match($command)) {
                 my $cmd = $aliases->{$alias_table->matched};
-                $sub = __get_key($self, ['commands', $cmd, 'sub']);
+                $sub = $self->__get_command($cmd);
             }
         }
 
