@@ -40,10 +40,7 @@ sub new {
                 $opts{args_ref};
             }
             else {
-                croak <<'EOM';
-'args_ref' is array reference but invalid value was given.
-fallback: use @ARGV as args_ref instead.
-EOM
+                croak "'args_ref' is array reference but invalid value was given.";
             }
         }
         else {
