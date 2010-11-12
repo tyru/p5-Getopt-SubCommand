@@ -233,16 +233,20 @@ sub show_usage {
 
 sub get_command_usage {
     my ($self, $command) = @_;
+    $command = $self->get_command unless defined $command;
     __get_key($self, ['commands', $command, 'usage']);
 }
 
 sub show_command_usage {
     my ($self, $command, %opts) = @_;
+    $command = $self->get_command unless defined $command;
     %opts = (filehandle => \*STDOUT, exit => 1, %opts);
+
     my $usage = $self->get_command_usage($command);
     if (defined $usage) {
         print {$opts{filehandle}} "$command: $usage";
     }
+
     exit if $opts{exit};
 }
 
@@ -513,9 +517,21 @@ Prints usage string and exit().
 
 =item get_command_usage()
 
+$self->get_command_usage()
+is identical to
+$self->get_command_usage($self->get_command)
+
+=item get_command_usage($command)
+
 Get command usage string.
 
 =item show_command_usage()
+
+$self->get_command_usage()
+is identical to
+$self->get_command_usage($self->get_command)
+
+=item show_command_usage($command)
 
 Prints command usage string and exit().
 
