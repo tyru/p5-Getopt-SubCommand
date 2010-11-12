@@ -13,6 +13,7 @@ Module::Build->new(
         'Test::Pod::Coverage' => 0,
         'Test::Exception' => 0,
         'Test::Output' => 0,
+        'Test::Exit' => 0,
         'Data::Util' => 0,
         'Regexp::Assemble' => 0,
         'Class::Accessor::Fast' => 0,

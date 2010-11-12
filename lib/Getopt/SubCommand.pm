@@ -88,14 +88,16 @@ sub split_args {
     # Global options.
     my @g;
     push @g, shift @$args while $args->[0] =~ /^-/;
-    $global_opts = $self->__get_options(
-        \@g,    # __get_options() destroys @g.
-        $self->{global_opts},
-    ) or goto end;
-    $self->__validate_required_global_opts($global_opts);
-    # @g becomes non-zero elements of array
-    # when global options were separated by "--".
-    unshift @$args, @g;
+    if (@g) {
+        $global_opts = $self->__get_options(
+            \@g,    # __get_options() destroys @g.
+            $self->{global_opts},
+        ) or goto end;
+        $self->__validate_required_global_opts($global_opts);
+        # @g becomes non-zero elements of array
+        # when global options were separated by "--".
+        unshift @$args, @g;
+    }
 
     # Command name.
     @$args or goto end;
