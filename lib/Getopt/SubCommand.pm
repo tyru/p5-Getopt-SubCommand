@@ -104,6 +104,13 @@ sub split_args {
     $command = shift @$args;
 
     # Command options.
+    if (defined($_ = __get_key($self, ['commands', $command]))
+        && $_->{auto_help_opt})
+    {
+        $_->{options}{help} = {
+            name => [qw/h help/],
+        };
+    }
     defined __get_key($self, ['commands', $command, 'options']) or goto end;
     $command_opts = $self->__get_options(
         $args,    # __get_options() destroys $args.
@@ -314,6 +321,15 @@ sub invoke_command {
     my @optional_args;
     if (is_array_ref $opts{optional_args}) {
         @optional_args = @{$opts{optional_args}};
+    }
+
+    # Process special option which are told to process at new().
+    if (__get_key($self, ['commands', $self->get_command, 'auto_help_opt'])
+        && defined($_ = $self->get_command_opts)
+        && $_->{help})
+    {
+        $self->show_command_usage($command);
+        exit 1;    # this will be never reached.
     }
 
     $sub->(
