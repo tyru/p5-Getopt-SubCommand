@@ -239,7 +239,10 @@ sub get_command_usage {
 sub show_command_usage {
     my ($self, $command, %opts) = @_;
     %opts = (filehandle => \*STDOUT, exit => 1, %opts);
-    print {$opts{filehandle}} $self->get_command_usage($command);
+    my $usage = $self->get_command_usage($command);
+    if (defined $usage) {
+        print {$opts{filehandle}} "$command: $usage";
+    }
     exit if $opts{exit};
 }
 

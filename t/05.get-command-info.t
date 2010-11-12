@@ -39,22 +39,22 @@ my @tests = (
     sub {
         stdout_is {
             $parser->show_command_usage('foo', exit => 0)
-        } "this is foo", "output is 'this is foo'.";
+        } "foo: this is foo", "output is 'this is foo'.";
     },
     sub {
         stdout_is {
             $parser->show_command_usage('foo', exit => 0)
-        } "this is foo", "output is 'this is foo'.";
+        } "foo: this is foo", "output is 'this is foo'.";
     },
     sub {
         stdout_is {
             $parser->show_command_usage('foo', exit => 0)
-        } "this is foo", "output is 'this is foo'.";
+        } "foo: this is foo", "output is 'this is foo'.";
     },
     sub {
         stderr_is {
             $parser->show_command_usage('foo', filehandle => \*STDERR, exit => 0)
-        } "this is foo", "output is 'this is foo'.";
+        } "foo: this is foo", "output is 'this is foo'.";
     },
 );
 $_->() for @tests;
