@@ -282,6 +282,7 @@ sub __deref_accessor {
     } keys %$h}
 }
 
+
 sub __get_command {
     my ($self, $str_or_coderef) = @_;
 
@@ -295,7 +296,6 @@ sub __get_command {
     }
     return undef;
 }
-
 
 sub invoke_command {
     my $self = shift;
