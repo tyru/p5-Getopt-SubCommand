@@ -55,9 +55,9 @@ sub new {
     if ($opts{auto_help_command}) {
         $self->{commands}{help} = {
             sub => do {
-                my $weaken_self = $self;
-                Scalar::Util::weaken $weaken_self;
-                sub { $weaken_self->show_usage };
+                my $weakened_self = $self;
+                Scalar::Util::weaken $weakened_self;
+                sub { $weakened_self->show_usage };
             },
         };
     }
