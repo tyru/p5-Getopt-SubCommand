@@ -6,50 +6,58 @@ use Getopt::SubCommand;
 my @tests = (
     # "--help", auto_help_opt => 1
     do {
-        my $foo_is_called = 0;
-        (
-            sub {
-                exits_ok {
-                    Getopt::SubCommand->new(
-                        args_ref => [qw/foo --help/],
-                        commands => {
-                            foo => {
-                                sub => sub { $foo_is_called = 1 },
-                                usage => 'This is foo.',
-                                auto_help_opt => 1,
+        SKIP: {
+            skip "exits_ok() shows bad habit output?", 2;
+
+            my $foo_is_called = 0;
+            (
+                sub {
+                    exits_ok {
+                        Getopt::SubCommand->new(
+                            args_ref => [qw/foo --help/],
+                            commands => {
+                                foo => {
+                                    sub => sub { $foo_is_called = 1 },
+                                    usage => 'This is foo.',
+                                    auto_help_opt => 1,
+                                },
                             },
-                        },
-                    )->invoke_command;
-                } "exits with success";
-            },
-            sub {
-                ok !$foo_is_called, "foo is not called.";
-            },
-        )
+                        )->invoke_command;
+                    } "exits with success";
+                },
+                sub {
+                    ok !$foo_is_called, "foo is not called.";
+                },
+            )
+        }
     },
 
     # "-h", auto_help_opt => 1
     do {
-        my $foo_is_called = 0;
-        (
-            sub {
-                exits_ok {
-                    Getopt::SubCommand->new(
-                        args_ref => [qw/foo -h/],
-                        commands => {
-                            foo => {
-                                sub => sub { $foo_is_called = 1 },
-                                usage => 'This is foo.',
-                                auto_help_opt => 1,
+        SKIP: {
+            skip "exits_ok() shows bad habit output?", 2;
+
+            my $foo_is_called = 0;
+            (
+                sub {
+                    exits_ok {
+                        Getopt::SubCommand->new(
+                            args_ref => [qw/foo -h/],
+                            commands => {
+                                foo => {
+                                    sub => sub { $foo_is_called = 1 },
+                                    usage => 'This is foo.',
+                                    auto_help_opt => 1,
+                                },
                             },
-                        },
-                    )->invoke_command;
-                } "exits with success";
-            },
-            sub {
-                ok !$foo_is_called, "foo is not called.";
-            },
-        )
+                        )->invoke_command;
+                    } "exits with success";
+                },
+                sub {
+                    ok !$foo_is_called, "foo is not called.";
+                },
+            )
+        }
     },
 
     # "", auto_help_opt => 1
@@ -149,4 +157,4 @@ my @tests = (
     },
 );
 $_->() for @tests;
-done_testing scalar @tests;
+done_testing;
