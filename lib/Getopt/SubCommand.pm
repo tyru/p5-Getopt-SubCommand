@@ -110,7 +110,7 @@ sub split_args {
 
     # Global options.
     my @g;
-    push @g, shift @$args while $args->[0] =~ /^-/;
+    push @g, shift @$args while @$args && $args->[0] =~ /^-/;
     if (@g) {
         $global_opts = $self->__get_options(
             \@g,    # __get_options() destroys @g.
