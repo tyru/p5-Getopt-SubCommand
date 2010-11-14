@@ -217,7 +217,8 @@ sub get_usage {
 
     return <<EOM;
 $cmdname $version
-usage: $cmdname [options] $cmdargs
+usage:
+  $cmdname [options] $cmdargs
 
 Avaiable commands are:
 $available_commands
