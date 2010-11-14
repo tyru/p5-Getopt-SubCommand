@@ -305,6 +305,8 @@ sub __get_command {
 
 sub can_invoke_command {
     my ($self, $command) = @_;
+    $command = $self->get_command unless defined $command;
+
     my $sub = __get_key($self, ['commands', $command, 'sub']);
     unless (is_code_ref $sub) {
         # Find aliases.
@@ -507,6 +509,12 @@ This becomes undef when no command options are found.
 
 Get global options.
 This becomes undef when no global options are found.
+
+=item can_invoke_command()
+
+$self->can_invoke_command()
+is identical to
+$self->can_invoke_command($self->get_command)
 
 =item can_invoke_command($command)
 
