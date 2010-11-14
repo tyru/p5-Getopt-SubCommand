@@ -257,7 +257,6 @@ sub show_usage {
 
 sub get_command_usage {
     my ($self, $command) = @_;
-    $command = $self->get_command unless defined $command;
     my $cmd = __get_key($self, ['commands', $command]);
     return undef unless defined $cmd;
 
@@ -572,12 +571,6 @@ Get usage string.
 =item show_usage()
 
 Prints usage string and exit().
-
-=item get_command_usage()
-
-$self->get_command_usage()
-is identical to
-$self->get_command_usage($self->get_command)
 
 =item get_command_usage($command)
 
