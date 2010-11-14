@@ -32,7 +32,7 @@ sub new {
         usage_args => $opts{usage_args},
         commands => $opts{commands},
         global_opts => $opts{global_opts},
-        aliases => $opts{aliases},
+        aliases => $opts{aliases} || {},
     }, $class;
     $self->set_args_ref(do {
         if (exists $opts{args_ref}) {
@@ -301,14 +301,11 @@ sub __get_command {
     return undef;
 }
 
-sub invoke_command {
-    my $self = shift;
-    my %opts = (@_ == 1 ? (command => shift) : @_);
-
-    my $command = defined $opts{command} ? $opts{command} : $self->get_command;
-    my $sub = $self->__get_command($command);
-    # Find aliases, fallback command.
+sub can_invoke_command {
+    my ($self, $command) = @_;
+    my $sub = __get_key($self, ['commands', $command, 'sub']);
     unless (is_code_ref $sub) {
+        # Find aliases.
         my $aliases = $self->{aliases};
         if (defined $command && %$aliases) {
             my $alias_table = $self->{__alias_table} ||=
@@ -318,10 +315,18 @@ sub invoke_command {
                 $sub = $self->__get_command($cmd);
             }
         }
+    }
+    $sub;
+}
 
-        if (!is_code_ref($sub) && exists $opts{fallback}) {
-            $sub = $self->__get_command($opts{fallback});
-        }
+sub invoke_command {
+    my $self = shift;
+    my %opts = (@_ == 1 ? (command => shift) : @_);
+
+    my $command = defined $opts{command} ? $opts{command} : $self->get_command;
+    my $sub = $self->can_invoke_command($command);
+    if (!is_code_ref($sub) && exists $opts{fallback}) {    # fallback.
+        $sub = $self->__get_command($opts{fallback});
     }
     croak "fatal: No sub could be found." unless is_code_ref $sub;
 
@@ -500,6 +505,11 @@ This becomes undef when no command options are found.
 
 Get global options.
 This becomes undef when no global options are found.
+
+=item can_invoke_command($command)
+
+This returns code reference if $self has $command's sub.
+Or not, returns undef.
 
 =item invoke_command()
 
