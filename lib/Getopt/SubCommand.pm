@@ -55,29 +55,37 @@ sub new {
 
     if ($opts{auto_help_command}) {
         $self->{commands}{help} = {
-            sub => do {
-                my $weakened_self = $self;
-                Scalar::Util::weaken $weakened_self;
-                sub {
-                    my (undef, undef, $args) = @_;
-                    if (@$args) {
-                        my $cmd = shift @$args;
-                        unless ($weakened_self->can_invoke_command($cmd)) {
-                            warn "Unknown command: $cmd\n";
-                            sleep 1;
-                        }
-                        $weakened_self->show_command_usage($cmd);
-                    }
-                    else {
-                        $weakened_self->show_usage;
-                    }
-                };
-            },
+            sub => $self->__generate_help_command(),
             %{$self->{commands}{help} || {}},
         };
     }
 
     $self;
+}
+
+sub __generate_help_command {
+    my ($self) = @_;
+
+    my $weakened_self = $self;
+    Scalar::Util::weaken $weakened_self;
+
+    return sub {
+        my (undef, undef, $args) = @_;
+        if (@$args) {
+            my $cmd = shift @$args;
+            if ($weakened_self->can_invoke_command($cmd)) {
+                $weakened_self->show_command_usage($cmd);
+            }
+            else {
+                warn "Unknown command: $cmd\n\n";
+                sleep 1;
+                $weakened_self->show_usage;
+            }
+        }
+        else {
+            $weakened_self->show_usage;
+        }
+    };
 }
 
 
