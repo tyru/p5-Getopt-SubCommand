@@ -60,6 +60,7 @@ sub new {
                 Scalar::Util::weaken $weakened_self;
                 sub { $weakened_self->show_usage };
             },
+            %{$self->{commands}{help} || {}},
         };
     }
 
