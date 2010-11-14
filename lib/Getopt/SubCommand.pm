@@ -1,5 +1,6 @@
 package Getopt::SubCommand;
 
+use 5.008_001;
 use strict;
 use warnings;
 use Carp qw/carp croak/;
