@@ -50,28 +50,6 @@ my @tests = (
         is $parser->can_invoke_command(sub {}), undef,
             "return undef for invalid argument type.";
     },
-
-    sub {
-        $parser = Getopt::SubCommand->new(
-            args => [qw/foo/],
-            commands => {
-                foo => {
-                    sub => sub { print "foo" },
-                },
-                bar => {
-                    sub => sub { print "bar" },
-                },
-                baz => {
-                    # sub => sub { print "baz" },
-                },
-            },
-        );
-        ok $parser, "creating instance.";
-    },
-    sub {
-        is ref $parser->can_invoke_command(), 'CODE',
-            "can invoke 'foo' command.";
-    },
 );
 $_->() for @tests;
 done_testing scalar @tests;
