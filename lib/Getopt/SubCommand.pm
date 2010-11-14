@@ -58,7 +58,20 @@ sub new {
             sub => do {
                 my $weakened_self = $self;
                 Scalar::Util::weaken $weakened_self;
-                sub { $weakened_self->show_usage };
+                sub {
+                    my (undef, undef, $args) = @_;
+                    if (@$args) {
+                        my $cmd = shift @$args;
+                        unless ($weakened_self->can_invoke_command($cmd)) {
+                            warn "Unknown command: $cmd\n";
+                            sleep 1;
+                        }
+                        $weakened_self->show_command_usage($cmd);
+                    }
+                    else {
+                        $weakened_self->show_usage;
+                    }
+                };
             },
             %{$self->{commands}{help} || {}},
         };
