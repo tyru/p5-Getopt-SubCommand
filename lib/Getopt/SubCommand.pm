@@ -354,7 +354,7 @@ sub can_invoke_command {
         # Find aliases.
         my $aliases = $self->{aliases};
         if (defined $command && %$aliases) {
-            my $alias_table = $self->{__alias_table} ||=
+            my $alias_table = $self->{__cache}{alias_table} ||=
                 Regexp::Assemble->new->track->add(keys %$aliases);
             if ($alias_table->match($command)) {
                 my $cmd = $aliases->{$alias_table->matched};
