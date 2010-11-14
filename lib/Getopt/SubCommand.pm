@@ -290,7 +290,6 @@ EOM
 
 sub show_command_usage {
     my ($self, $command, %opts) = @_;
-    $command = $self->get_command unless defined $command;
     %opts = (filehandle => \*STDOUT, exit => 1, exit_status => 0, %opts);
     my $usage = $self->get_command_usage($command);
     print {$opts{filehandle}} $usage if defined $usage;
@@ -575,12 +574,6 @@ Prints usage string and exit().
 =item get_command_usage($command)
 
 Get command usage string.
-
-=item show_command_usage()
-
-$self->get_command_usage()
-is identical to
-$self->get_command_usage($self->get_command)
 
 =item show_command_usage($command)
 
