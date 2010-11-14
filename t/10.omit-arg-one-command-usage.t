@@ -4,7 +4,7 @@ use Getopt::SubCommand;
 my @tests = (
     sub {
         my $parser = Getopt::SubCommand->new(
-            args_ref => [qw/foo bar/],
+            args => [qw/foo bar/],
             commands => {
                 foo => {
                     usage => 'this is foo',

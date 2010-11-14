@@ -6,7 +6,7 @@ my $parser;
 my @tests = (
     sub {
         $parser = Getopt::SubCommand->new(
-            args_ref => [qw/--global -- -a foo/],
+            args => [qw/--global -- -a foo/],
             global_opts => {
                 global => {name => 'global'},
                 a      => {name => 'a'},

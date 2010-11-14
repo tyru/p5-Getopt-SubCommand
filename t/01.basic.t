@@ -20,7 +20,7 @@ my @tests = (
         lives_ok {
             $parser = Getopt::SubCommand->new(
                 do_parse_args => 0,    # do not parse_args() at new().
-                args_ref => [@test_args],
+                args => [@test_args],
                 global_opts => {
                     global => {
                         name => [qw/g global/],
@@ -55,14 +55,14 @@ my @tests = (
         };
     },
     sub {
-        is_deeply $parser->get_args_ref, [@test_args]
+        is_deeply $parser->get_args, [@test_args]
             ,'$parser->new(do_parse_args => 0, ...)'
-                . 'does NOT destroy $parser->get_args_ref() yet.';
+                . 'does NOT destroy $parser->get_args() yet.';
     },
     sub {
         $parser->parse_args();
-        is_deeply $parser->get_args_ref, []
-            ,'now $parser->get_args_ref() is empty array-ref.';
+        is_deeply $parser->get_args, []
+            ,'now $parser->get_args() is empty array-ref.';
     },
     sub {
         is_deeply $parser->get_global_opts(), {

@@ -13,7 +13,7 @@ use Data::Util qw/:check anon_scalar/;
 use Regexp::Assemble;
 use base qw/Class::Accessor::Fast/;
 __PACKAGE__->follow_best_practice;
-__PACKAGE__->mk_accessors(qw/args_ref parser_config/);
+__PACKAGE__->mk_accessors(qw/args parser_config/);
 __PACKAGE__->mk_ro_accessors(qw/command command_args/);
 
 
@@ -35,13 +35,13 @@ sub new {
         global_opts => $opts{global_opts},
         aliases => $opts{aliases} || {},
     }, $class;
-    $self->set_args_ref(do {
-        if (exists $opts{args_ref}) {
-            if (is_array_ref $opts{args_ref}) {
-                $opts{args_ref};
+    $self->set_args(do {
+        if (exists $opts{args}) {
+            if (is_array_ref $opts{args}) {
+                $opts{args};
             }
             else {
-                croak "'args_ref' is array reference but invalid value was given.";
+                croak "'args' is array reference but invalid value was given.";
             }
         }
         else {
@@ -69,7 +69,7 @@ sub new {
 
 sub parse_args {
     my ($self, $args) = @_;
-    $args = $self->get_args_ref unless defined $args;
+    $args = $self->get_args unless defined $args;
 
     # split_args() destroys $args.
     my ($global_opts, $cmd, $cmd_opts, $cmd_args) = $self->split_args($args);
@@ -83,7 +83,7 @@ sub parse_args {
 sub split_args {
     my ($self, $args) = @_;
     my ($global_opts, $command, $command_opts, $command_args);
-    $args = $self->get_args_ref unless defined $args;
+    $args = $self->get_args unless defined $args;
     goto end unless is_array_ref($args) && @$args;
 
     # Global options.
@@ -380,8 +380,8 @@ Getopt::SubCommand - Simple sub-command parser
 
     use Getopt::SubCommand;
     my $parser = Getopt::SubCommand->new(
-        # args_ref => \@ARGV,    # default to \@ARGV
-        args_ref => [qw(
+        # args => \@ARGV,    # default to \@ARGV
+        args => [qw(
             --global --hello=world
             foo
             -a --command),
@@ -546,10 +546,10 @@ $self->get_command_usage($self->get_command)
 
 Prints command usage string and exit().
 
-=item get_args_ref()
+=item get_args()
 Getter for arguments array reference.
 
-=item set_args_ref($args_ref)
+=item set_args($args)
 
 Setter for arguments array reference.
 
@@ -563,22 +563,22 @@ Setter for config array reference for Getopt::Long::Parser->new().
 
 =item parse_args()
 
-=item parse_args($args_ref)
+=item parse_args($args)
 
-Parses $args_ref.
-If $args_ref was not given,
-$self->get_args_ref()'s value is used instead.
+Parses $args.
+If $args was not given,
+$self->get_args()'s value is used instead.
 
 Array reference will be destroyed
 (it must be empty array reference after call).
 
 =item split_args()
 
-=item split_args($args_ref)
+=item split_args($args)
 
-Splits $args_ref into 4 elements of array.
-If $args_ref was not given,
-$self->get_args_ref()'s value is used instead.
+Splits $args into 4 elements of array.
+If $args was not given,
+$self->get_args()'s value is used instead.
 
 Array reference will be destroyed
 (it must be empty array reference after call).

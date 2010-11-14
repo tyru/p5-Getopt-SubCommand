@@ -7,7 +7,7 @@ my @tests = (
     sub {
         lives_ok {
             Getopt::SubCommand->new(
-                args_ref => [qw/delete -f/],
+                args => [qw/delete -f/],
                 commands => {
                     delete => {
                         sub => sub { print "!!! DELETE SOMETHING IMPORTANT !!!" },
@@ -22,7 +22,7 @@ my @tests = (
     sub {
         dies_ok {
             Getopt::SubCommand->new(
-                args_ref => [qw/delete/],    # no -f, it must die
+                args => [qw/delete/],    # no -f, it must die
                 commands => {
                     delete => {
                         sub => sub { print "!!! DELETE SOMETHING IMPORTANT !!!" },

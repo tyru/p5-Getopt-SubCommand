@@ -14,7 +14,7 @@ my @tests = (
                 sub {
                     exits_ok {
                         Getopt::SubCommand->new(
-                            args_ref => [qw/foo --help/],
+                            args => [qw/foo --help/],
                             commands => {
                                 foo => {
                                     sub => sub { $foo_is_called = 1 },
@@ -42,7 +42,7 @@ my @tests = (
                 sub {
                     exits_ok {
                         Getopt::SubCommand->new(
-                            args_ref => [qw/foo -h/],
+                            args => [qw/foo -h/],
                             commands => {
                                 foo => {
                                     sub => sub { $foo_is_called = 1 },
@@ -67,7 +67,7 @@ my @tests = (
             sub {
                 never_exits_ok {
                     Getopt::SubCommand->new(
-                        args_ref => [qw/foo/],
+                        args => [qw/foo/],
                         commands => {
                             foo => {
                                 sub => sub { $foo_is_called = 1 },
@@ -91,7 +91,7 @@ my @tests = (
             sub {
                 never_exits_ok {
                     Getopt::SubCommand->new(
-                        args_ref => [qw/foo --help/],
+                        args => [qw/foo --help/],
                         commands => {
                             foo => {
                                 sub => sub { $foo_is_called = 1 },
@@ -115,7 +115,7 @@ my @tests = (
             sub {
                 never_exits_ok {
                     Getopt::SubCommand->new(
-                        args_ref => [qw/foo -h/],
+                        args => [qw/foo -h/],
                         commands => {
                             foo => {
                                 sub => sub { $foo_is_called = 1 },
@@ -139,7 +139,7 @@ my @tests = (
             sub {
                 never_exits_ok {
                     Getopt::SubCommand->new(
-                        args_ref => [qw/foo/],
+                        args => [qw/foo/],
                         commands => {
                             foo => {
                                 sub => sub { $foo_is_called = 1 },

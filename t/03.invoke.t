@@ -8,7 +8,7 @@ my @tests = (
     sub {
         dies_ok {
             Getopt::SubCommand->new(
-                args_ref => [qw/foo -f bar baz/],
+                args => [qw/foo -f bar baz/],
                 commands => {
                     foo => {
                         # no command sub.
@@ -23,7 +23,7 @@ my @tests = (
     sub {
         lives_ok {
             Getopt::SubCommand->new(
-                args_ref => [qw/foo -f bar baz/],
+                args => [qw/foo -f bar baz/],
                 commands => {
                     foo => {
                         # this must be called.
@@ -39,7 +39,7 @@ my @tests = (
     sub {
         stdout_is {
             Getopt::SubCommand->new(
-                args_ref => [qw/foo -f bar baz/],
+                args => [qw/foo -f bar baz/],
                 commands => {
                     foo => {
                         # this must be called.
