@@ -7,7 +7,6 @@ my $parser;
 my @tests = (
     sub {
         $parser = Getopt::SubCommand->new(
-            do_parse_args => 0,
             commands => {
                 foo => {
                     sub => sub { print "foo" },
