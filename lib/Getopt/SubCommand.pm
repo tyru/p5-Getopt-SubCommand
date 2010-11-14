@@ -228,9 +228,9 @@ EOM
 
 sub show_usage {
     my ($self, %opts) = @_;
-    %opts = (filehandle => \*STDOUT, exit => 1, %opts);
+    %opts = (filehandle => \*STDOUT, exit => 1, exit_status => 0, %opts);
     print {$opts{filehandle}} $self->get_usage;
-    exit if $opts{exit};
+    exit $opts{exit_status} if $opts{exit};
 }
 
 sub get_command_usage {
@@ -242,14 +242,14 @@ sub get_command_usage {
 sub show_command_usage {
     my ($self, $command, %opts) = @_;
     $command = $self->get_command unless defined $command;
-    %opts = (filehandle => \*STDOUT, exit => 1, %opts);
+    %opts = (filehandle => \*STDOUT, exit => 1, exit_status => 0, %opts);
 
     my $usage = $self->get_command_usage($command);
     if (defined $usage) {
         print {$opts{filehandle}} "$command: $usage";
     }
 
-    exit if $opts{exit};
+    exit $opts{exit_status} if $opts{exit};
 }
 
 
