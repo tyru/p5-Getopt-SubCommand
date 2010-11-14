@@ -18,7 +18,7 @@ my @tests = (
         ok $parser, "creating instance.";
     },
     sub {
-        is $parser->get_command_usage('help'), "E478: Don't panic!",
+        like $parser->get_command_usage('help'), qr/- E478: Don't panic!/,
             "can get usage text of 'help' command.";
     },
     sub {

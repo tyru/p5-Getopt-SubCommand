@@ -22,39 +22,49 @@ my @tests = (
         ok $parser, "creating instance";
     },
     sub {
-        is $parser->get_command_usage(), undef, 'get_command_usage(): check arguments';
+        is $parser->get_command_usage(), undef,
+            'get_command_usage(): check arguments';
     },
     sub {
-        is $parser->get_command_usage('foo'), 'this is foo', "get 'foo' usage.";
+        like $parser->get_command_usage('foo'), qr/this is foo/,
+            "get 'foo' usage.";
     },
     sub {
-        is $parser->get_command_usage('bar'), 'this is bar', "get 'bar' usage.";
+        like $parser->get_command_usage('bar'), qr/this is bar/,
+            "get 'bar' usage.";
     },
     sub {
-        is $parser->get_command_usage('baz'), undef, "'baz' does not have usage.";
+        like $parser->get_command_usage('baz'), qr/.+/,    # no usage
+            "'baz' does not have usage but output is generated because it exists.";
     },
     sub {
-        is $parser->get_command_usage('unko'), undef, "'unko' does not have usage.";
+        is $parser->get_command_usage('unko'), undef,
+            "'unko' does not have usage.";
+    },
+    sub {
+        stdout_like {
+            $parser->show_command_usage('foo', exit => 0)
+        } qr/this is foo/, "output is 'this is foo'.";
+    },
+    sub {
+        stdout_like {
+            $parser->show_command_usage('bar', exit => 0)
+        } qr/this is bar/, "output is 'this is bar'.";
+    },
+    sub {
+        stdout_isnt {
+            $parser->show_command_usage('baz', exit => 0)
+        } '', "has output.";
     },
     sub {
         stdout_is {
-            $parser->show_command_usage('foo', exit => 0)
-        } "foo: this is foo", "output is 'this is foo'.";
+            $parser->show_command_usage('unko', exit => 0)
+        } '', "'unko' does not have usage.";
     },
     sub {
-        stdout_is {
-            $parser->show_command_usage('foo', exit => 0)
-        } "foo: this is foo", "output is 'this is foo'.";
-    },
-    sub {
-        stdout_is {
-            $parser->show_command_usage('foo', exit => 0)
-        } "foo: this is foo", "output is 'this is foo'.";
-    },
-    sub {
-        stderr_is {
+        stderr_like {
             $parser->show_command_usage('foo', filehandle => \*STDERR, exit => 0)
-        } "foo: this is foo", "output is 'this is foo'.";
+        } qr/this is foo/, "'foo' does not have usage.";
     },
 );
 $_->() for @tests;

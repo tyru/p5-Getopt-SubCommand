@@ -236,19 +236,43 @@ sub show_usage {
 sub get_command_usage {
     my ($self, $command) = @_;
     $command = $self->get_command unless defined $command;
-    __get_key($self, ['commands', $command, 'usage']);
+    my $cmd = __get_key($self, ['commands', $command]);
+    return undef unless defined $cmd;
+
+    my $cmdname = $self->{usage_name};
+    my $cmdargs = defined $cmd->{usage_args} ? $cmd->{usage_args} : 'ARGS';
+    my $cmdusage = defined $cmd->{usage} ? " - $cmd->{usage}" : '';
+    my $options = $cmd->{options};
+    my $available_options = '';
+    if (defined $options) {
+        $available_options = "options:\n" . join "\n", map {
+            my $name = $_;
+            my $optnames = __get_key($options, [$name, 'name']);
+            if (is_array_ref $optnames) {
+                $optnames = join ',', map {
+                    length $_ == 1 ? "-$_" : "--$_"
+                } @$optnames;
+            }
+            else {
+                $optnames = length $optnames == 1 ? "-$optnames" : "--$optnames";
+            }
+            my $usage = __get_key($options, [$name, 'usage']);
+            "  $optnames" . (defined $usage ? " - $usage" : '');
+        } keys %$options;
+    }
+    return <<EOM;
+usage:
+  $cmdname [options] $command $cmdargs$cmdusage
+$available_options
+EOM
 }
 
 sub show_command_usage {
     my ($self, $command, %opts) = @_;
     $command = $self->get_command unless defined $command;
     %opts = (filehandle => \*STDOUT, exit => 1, exit_status => 0, %opts);
-
     my $usage = $self->get_command_usage($command);
-    if (defined $usage) {
-        print {$opts{filehandle}} "$command: $usage";
-    }
-
+    print {$opts{filehandle}} $usage if defined $usage;
     exit $opts{exit_status} if $opts{exit};
 }
 
