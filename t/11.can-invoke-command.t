@@ -22,13 +22,32 @@ my @tests = (
         ok $parser, "creating instance.";
     },
     sub {
-        is ref $parser->can_invoke_command('foo'), 'CODE', "can invoke 'foo' command.";
+        is ref $parser->can_invoke_command('foo'), 'CODE',
+            "can invoke 'foo' command.";
     },
     sub {
-        is ref $parser->can_invoke_command('bar'), 'CODE', "can invoke 'bar' command.";
+        is ref $parser->can_invoke_command('bar'), 'CODE',
+            "can invoke 'bar' command.";
     },
     sub {
-        is $parser->can_invoke_command('baz'), undef, "cannot invoke 'baz' command.";
+        is $parser->can_invoke_command('baz'), undef,
+            "cannot invoke 'baz' command.";
+    },
+    sub {
+        is $parser->can_invoke_command(undef), undef,
+            "return undef for invalid argument type.";
+    },
+    sub {
+        is $parser->can_invoke_command([]), undef,
+            "return undef for invalid argument type.";
+    },
+    sub {
+        is $parser->can_invoke_command({}), undef,
+            "return undef for invalid argument type.";
+    },
+    sub {
+        is $parser->can_invoke_command(sub {}), undef,
+            "return undef for invalid argument type.";
     },
 );
 $_->() for @tests;
