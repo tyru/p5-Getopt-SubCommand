@@ -28,7 +28,7 @@ sub new {
     );
 
     my $self = bless {
-        usage_name => $opts{usage_name},
+        usage_name => defined $opts{usage_name} ? $opts{usage_name} : '[No name]',
         usage_version => $opts{usage_version},
         usage_args => $opts{usage_args},
         commands => $opts{commands},
@@ -206,7 +206,7 @@ sub __build_parser_args {
 sub get_usage {
     my ($self) = @_;
 
-    my $cmdname = defined $self->{usage_name} ? $self->{usage_name} : '[No name]';
+    my $cmdname = $self->{usage_name};
     my $version = defined $self->{usage_version} ? $self->{usage_version} : '';
     my $cmdargs = defined $self->{usage_args} ? $self->{usage_args} : 'COMMAND ARGS';
     my $available_commands = join "\n", map {
