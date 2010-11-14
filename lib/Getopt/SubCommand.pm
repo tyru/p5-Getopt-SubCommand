@@ -400,6 +400,9 @@ sub invoke_command {
 
 
 # Accessing to value without creating empty key.
+# Returns undef when it fails to get element.
+# Returns element value when it succeeds.
+# NOTE: this cannot work correctly for undef element.
 sub __get_key {
     my ($hashref, $keys) = @_;
     my $key = shift @$keys;
