@@ -567,7 +567,7 @@ Setter for config array reference for Getopt::Long::Parser->new().
 
 Parses $args_ref.
 If $args_ref was not given,
-$self->args_ref()'s value is used instead.
+$self->get_args_ref()'s value is used instead.
 
 Array reference will be destroyed
 (it must be empty array reference after call).
@@ -578,7 +578,7 @@ Array reference will be destroyed
 
 Splits $args_ref into 4 elements of array.
 If $args_ref was not given,
-$self->args_ref()'s value is used instead.
+$self->get_args_ref()'s value is used instead.
 
 Array reference will be destroyed
 (it must be empty array reference after call).
