@@ -16,7 +16,7 @@ my @tests = (
                         },
                     },
                 },
-            );
+            )->validate_required_opts;
         } "required option is given. it must live";
     },
     sub {
@@ -31,7 +31,7 @@ my @tests = (
                         },
                     },
                 },
-            );
+            )->validate_required_opts;
         } "required option is missing. it must die";
     },
 );

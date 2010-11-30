@@ -116,7 +116,6 @@ sub split_args {
             \@g,    # __get_options() destroys @g.
             $self->{global_opts},
         ) or goto end;
-        $self->__validate_required_global_opts($global_opts);
         # @g becomes non-zero elements of array
         # when global options were separated by "--".
         unshift @$args, @g;
@@ -139,7 +138,6 @@ sub split_args {
         $args,    # __get_options() destroys $args.
         $self->{commands}{$command}{options},
     ) or goto end;
-    $self->__validate_required_command_opts($command, $command_opts);
 
 end:
     # Command args.
@@ -147,6 +145,22 @@ end:
     @$args = ();
 
     ($global_opts, $command, $command_opts, $command_args);
+}
+
+
+sub validate_required_opts {
+    my ($self) = @_;
+
+    if (defined($_ = $self->get_global_opts)) {
+        $self->__validate_required_global_opts($_);
+    }
+
+    my $cmd = $self->get_command;
+    if (defined($cmd)
+        && defined($_ = $self->get_command_opts))
+    {
+        $self->__validate_required_command_opts($cmd, $_);
+    }
 }
 
 # Returns undef when it fails to parse.
@@ -620,6 +634,10 @@ Array reference will be destroyed
 (it must be empty array reference after call).
 
 TODO
+
+=item validate_required_opts()
+
+die() if there were lacking required options.
 
 =back
 
