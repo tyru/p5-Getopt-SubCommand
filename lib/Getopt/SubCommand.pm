@@ -409,7 +409,7 @@ sub invoke_command {
         && $_->{help})
     {
         $self->show_command_usage($command);
-        exit 1;    # this will be never reached.
+        die "fatal: this will be never reached.\n";
     }
 
     $sub->(
