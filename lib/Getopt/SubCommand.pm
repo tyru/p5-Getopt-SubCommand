@@ -363,6 +363,7 @@ sub __get_command {
 
 sub can_invoke_command {
     my ($self, $command) = @_;
+    $command = $self->get_command unless defined $command;
     my $sub = __get_key($self, ['commands', $command, 'sub']);
     unless (is_code_ref $sub) {
         # Find aliases.
