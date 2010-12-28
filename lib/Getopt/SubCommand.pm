@@ -593,15 +593,24 @@ Get command arguments (array reference).
 This is undef before calling $self->parse_args().
 After call, This must not be undef.
 
-=item get_command_opts()
+=item get_command_opts([$name [, $else]])
 
 Get command options.
 This becomes undef when no command options are found.
 
-=item get_global_opts()
+See get_global_opts() for the description of $name and $else.
+
+=item get_global_opts([$name [, $else]])
 
 Get global options.
 This becomes undef when no global options are found.
+
+If $name is omitted,
+return a hash reference of all global options.
+If $name is given,
+return its value in the hash reference ($name as a key).
+If $name does not exist in the hash reference,
+return $else (if it's not given, undef by default).
 
 =item can_invoke_command([$command])
 
