@@ -672,7 +672,7 @@ Setter for config array reference for Getopt::Long::Parser->new().
 =item parse_args([$args [, $opts]])
 
 Parses $args.
-If $args was not given,
+If $args is not given,
 $self->get_args()'s value is used instead.
 
 $opts is hash reference.
@@ -695,7 +695,7 @@ Array reference will be destroyed
 =item split_args([$args])
 
 Splits $args into 4 elements of array.
-If $args was not given,
+If $args is not given,
 $self->get_args()'s value is used instead.
 
 Array reference will be destroyed
