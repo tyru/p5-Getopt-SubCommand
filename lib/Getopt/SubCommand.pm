@@ -591,10 +591,13 @@ This becomes undef when no command options are found.
 Get global options.
 This becomes undef when no global options are found.
 
-=item can_invoke_command($command)
+=item can_invoke_command([$command])
 
 This returns code reference if $self has $command's sub.
 Or not, returns undef.
+
+If $command is omitted,
+use $self->get_command() instead.
 
 =item invoke_command()
 
@@ -610,13 +613,17 @@ Get usage string.
 
 Prints usage string and exit().
 
-=item get_command_usage($command)
+=item get_command_usage([$command])
 
 Get command usage string.
+If $command is omitted,
+use $self->get_command() instead.
 
-=item show_command_usage($command)
+=item show_command_usage([$command])
 
 Prints command usage string and exit().
+If $command is omitted,
+use $self->get_command() instead.
 
 =item get_args()
 Getter for arguments array reference.
@@ -655,9 +662,7 @@ call C<validate_required_opts()> at the end.
 Array reference will be destroyed
 (it must be empty array reference after call).
 
-=item split_args()
-
-=item split_args($args)
+=item split_args([$args])
 
 Splits $args into 4 elements of array.
 If $args was not given,
