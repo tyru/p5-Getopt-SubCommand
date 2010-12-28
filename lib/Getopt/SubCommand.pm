@@ -420,9 +420,7 @@ sub invoke_command {
     }
 
     $sub->(
-        $self->get_global_opts(),
-        $self->get_command_opts(),
-        $self->get_command_args(),
+        $self,
         @optional_args,
     );
 }
