@@ -684,7 +684,7 @@ See the following description for its keys and values.
 
 Default is 1.
 It this value is true,
-call C<validate_required_opts()> at the end.
+call validate_required_opts() at the end.
 
 =back
 
