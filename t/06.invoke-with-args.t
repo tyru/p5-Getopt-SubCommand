@@ -22,6 +22,7 @@ my @tests = (
         );
         ok $parser, "creating instance";
     },
+
     sub {
         stdout_is {
             $parser->invoke_command('foo')
@@ -35,13 +36,37 @@ my @tests = (
     sub {
         dies_ok {
             $parser->invoke_command('baz')
-        } "invoking 'bar' must fail.";
+        } "invoking 'baz' must fail.";
     },
     sub {
         dies_ok {
             $parser->invoke_command('hello')
         } "invoking 'hello' must fail.";
     },
+
+    sub {
+        stdout_is {
+            $parser->invoke_command({command => 'foo'})
+        } "foo", "invoking 'foo'.";
+    },
+    sub {
+        dies_ok {
+            $parser->invoke_command({command => 'baz'})
+        } "invoking 'baz' must fail.";
+    },
+    sub {
+        my $invoked;
+        lives_ok {
+            $parser->invoke_command({
+                command => 'hello',
+                fallback => sub {
+                    $invoked = 1
+                },
+            })
+        } "invoking 'hello' must fail.";
+        ok $invoked;
+    },
+    sub {},    # for previous test
 );
 $_->() for @tests;
 done_testing scalar @tests;

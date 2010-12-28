@@ -398,16 +398,28 @@ sub can_invoke_command {
 
 sub invoke_command {
     my $self = shift;
-    my %opts = (@_ == 1 ? (command => shift) : @_);
+    my %opts;
+    if (@_) {
+        if (is_hash_ref $_[0]) {
+            %opts = %{ $_[0] };
+        }
+        elsif (is_string $_[0]) {
+            %opts = (command => $_[0]);
+        }
+        else {
+            croak "fatal: invoke_command() received invalid arguments";
+        }
+    }
+    $opts{command} = $self->get_command
+        unless defined $opts{command};
 
-    my $command = defined $opts{command} ? $opts{command} : $self->get_command;
-    my $sub = $self->can_invoke_command($command);
+    my $sub = $self->can_invoke_command($opts{command});
     if (!is_code_ref($sub) && exists $opts{fallback}) {    # fallback.
         $sub = $self->__get_command($opts{fallback});
     }
     unless (is_code_ref $sub) {
-        if (defined $command) {
-            croak "fatal: No sub could be found for command '$command'.";
+        if (defined $opts{command}) {
+            croak "fatal: No sub could be found for command '$opts{command}'.";
         }
         else {
             croak "fatal: No sub could be found.";
@@ -424,7 +436,7 @@ sub invoke_command {
         && defined($_ = $self->get_command_opts)
         && $_->{help})
     {
-        $self->show_command_usage($command);
+        $self->show_command_usage($opts{command});
         die "fatal: this will be never reached.\n";
     }
 
@@ -599,11 +611,28 @@ Or not, returns undef.
 If $command is omitted,
 use $self->get_command() instead.
 
-=item invoke_command()
+=item invoke_command([$command])
 
-=item invoke_command(%opts)
+=item invoke_command($opts)
 
 Invoke command if "sub" exists in command's structure.
+
+$opts is hash reference.
+See the following description for its keys and values.
+
+=over
+
+=item command
+
+Command name.
+
+=item fallback
+
+When command is not found,
+this code reference is used.
+
+=back
+
 
 =item get_usage()
 
@@ -658,6 +687,7 @@ It this value is true,
 call C<validate_required_opts()> at the end.
 
 =back
+
 
 Array reference will be destroyed
 (it must be empty array reference after call).
