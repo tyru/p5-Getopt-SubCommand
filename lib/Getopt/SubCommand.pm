@@ -305,6 +305,7 @@ EOM
 
 sub show_command_usage {
     my ($self, $command, %opts) = @_;
+    $command = $self->get_command unless defined $command;
     %opts = (filehandle => \*STDOUT, exit => 1, exit_status => 0, %opts);
     my $usage = $self->get_command_usage($command);
     print {$opts{filehandle}} $usage if defined $usage;
