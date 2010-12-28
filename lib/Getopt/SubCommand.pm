@@ -324,8 +324,7 @@ sub __set_command_opts {
 }
 
 sub get_command_opts {
-    my $self = shift;
-    __deref_accessor($self, '__command_opts', @_);
+    __get_deref_opts('__command_opts', @_);
 }
 
 sub __set_global_opts {
@@ -334,17 +333,24 @@ sub __set_global_opts {
 }
 
 sub get_global_opts {
-    my $self = shift;
-    __deref_accessor($self, '__global_opts', @_);
+    __get_deref_opts('__global_opts', @_);
 }
 
-sub __deref_accessor {
-    my $self = shift;
-    my $ac_name = shift;
-    if (@_) {
-        $self->{$ac_name} = $_[0];
-    }
-    my $h = $self->{$ac_name};
+sub __get_deref_opts {
+    # NOTE: $else is undef when was not given.
+    my $key = shift;
+    my ($self, $name, $else) = @_;
+
+    my $opts = $self->__deref_get($key);
+    return $opts if @_ == 1;
+    return $opts unless is_hash_ref $opts;
+
+    exists $opts->{$name} ? $opts->{$name} : $else;
+}
+
+sub __deref_get {
+    my ($self, $name) = @_;
+    my $h = $self->{$name};
     return $h unless is_hash_ref $h;
     # Dereference anon-scalar values.
     +{map {
