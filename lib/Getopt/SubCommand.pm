@@ -11,6 +11,8 @@ use Getopt::Long ();
 use Scalar::Util ();
 use Data::Util qw/:check anon_scalar/;
 use Regexp::Assemble;
+use File::Basename qw(basename);
+
 use base qw/Class::Accessor::Fast/;
 __PACKAGE__->follow_best_practice;
 __PACKAGE__->mk_accessors(qw/args parser_config/);
@@ -27,8 +29,11 @@ sub new {
         %opts,
     );
 
+    unless (defined $opts{usage_name}) {
+        $opts{usage_name} = basename((caller)[1]);
+    }
     my $self = bless {
-        usage_name => defined $opts{usage_name} ? $opts{usage_name} : '[No name]',
+        usage_name => $opts{usage_name},
         usage_version => $opts{usage_version},
         usage_args => $opts{usage_args},
         commands => $opts{commands},
