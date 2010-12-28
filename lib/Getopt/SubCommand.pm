@@ -271,6 +271,7 @@ sub show_usage {
 
 sub get_command_usage {
     my ($self, $command) = @_;
+    $command = $self->get_command unless defined $command;
     my $cmd = __get_key($self, ['commands', $command]);
     return undef unless defined $cmd;
 
