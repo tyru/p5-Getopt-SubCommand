@@ -95,7 +95,8 @@ sub __generate_help_command {
 
 
 sub parse_args {
-    my ($self, $args) = @_;
+    my ($self, $args, $opts) = @_;
+    $opts ||= {validate => 1};
     $args = $self->get_args unless defined $args;
 
     # split_args() destroys $args.
@@ -105,6 +106,8 @@ sub parse_args {
     $self->set('command', $cmd);
     $self->__set_command_opts($cmd_opts);
     $self->set('command_args', $cmd_args);
+
+    $self->validate_required_opts if $opts->{validate};
 }
 
 sub split_args {
@@ -630,13 +633,24 @@ Getter for config array reference for Getopt::Long::Parser->new().
 
 Setter for config array reference for Getopt::Long::Parser->new().
 
-=item parse_args()
-
-=item parse_args($args)
+=item parse_args([$args [, $opts]])
 
 Parses $args.
 If $args was not given,
 $self->get_args()'s value is used instead.
+
+$opts is hash reference.
+See the following description for its keys and values.
+
+=over
+
+=item validate
+
+Default is 1.
+It this value is true,
+call C<validate_required_opts()> at the end.
+
+=back
 
 Array reference will be destroyed
 (it must be empty array reference after call).
