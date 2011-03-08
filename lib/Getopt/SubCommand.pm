@@ -75,7 +75,8 @@ sub __generate_help_command {
     Scalar::Util::weaken $weakened_self;
 
     return sub {
-        my (undef, undef, $args) = @_;
+        my ($self) = @_;
+        my $args = $self->get_command_args();
         if (@$args) {
             my $cmd = shift @$args;
             if ($weakened_self->can_invoke_command($cmd)) {
